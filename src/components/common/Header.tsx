@@ -6,19 +6,21 @@ interface HeaderProps {
 
 export function Header({ onLoginClick }: HeaderProps) {
   return (
-    <header className="bg-surface-medium h-14 w-full flex items-center justify-between px-4 md:px-16 lg:px-64">
-      <Link
-        to="/"
-        className="text-xl font-extrabold bg-gradient-to-r from-brand-gradient-from via-brand-gradient-via to-brand-gradient-to bg-clip-text text-transparent"
-      >
-        {'>_ SOJ'}
-      </Link>
-      <button
-        onClick={onLoginClick}
-        className="text-white text-base hover:opacity-80 transition-opacity"
-      >
-        로그인 | 회원가입
-      </button>
+    <header className="bg-white border-b border-gray-200 h-14 w-full">
+      <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+        <Link
+          to="/"
+          className="text-xl font-extrabold bg-gradient-to-r from-brand-gradient-from via-brand-gradient-via to-brand-gradient-to bg-clip-text text-transparent"
+        >
+          {'>_ SOJ'}
+        </Link>
+        <button
+          onClick={onLoginClick}
+          className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          로그인 | 회원가입
+        </button>
+      </div>
     </header>
   )
 }

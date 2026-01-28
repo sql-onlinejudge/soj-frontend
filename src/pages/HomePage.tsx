@@ -36,7 +36,7 @@ export function HomePage() {
           minDifficulty,
           maxDifficulty,
           page,
-          size: 10,
+          size: 14,
           sort: sortParams,
         })
         setData(response)
@@ -71,11 +71,13 @@ export function HomePage() {
             />
           </aside>
 
-          <main className="flex-1">
-            <ProblemList
-              problems={data?.content || []}
-              isLoading={isLoading}
-            />
+          <main className="flex-1 flex flex-col min-h-[700px]">
+            <div className="flex-1">
+              <ProblemList
+                problems={data?.content || []}
+                isLoading={isLoading}
+              />
+            </div>
 
             {data && (
               <Pagination

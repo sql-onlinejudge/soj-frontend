@@ -16,9 +16,9 @@ export function DifficultyBadge({ level }: DifficultyBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center justify-center px-3 py-1 rounded-md text-sm font-medium ${style.bg} ${style.text}`}
+      className={`inline-flex items-center justify-center px-2 py-0.5 rounded text-xs font-medium ${style.bg} ${style.text}`}
     >
-      Lv. {clampedLevel}
+      Lv.{clampedLevel}
     </span>
   )
 }

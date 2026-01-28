@@ -1,5 +1,3 @@
-import { Button } from './Button'
-
 interface PaginationProps {
   currentPage: number
   totalPages: number
@@ -50,44 +48,42 @@ export function Pagination({
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-6">
-      <Button
-        variant="secondary"
-        size="sm"
+    <div className="flex items-center justify-center gap-1 mt-6">
+      <button
         onClick={() => onPageChange(Math.max(0, currentPage - 1))}
         disabled={currentPage === 0}
-        className="w-8 px-0"
+        className="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         ‹
-      </Button>
+      </button>
 
       {getVisiblePages().map((page, index) =>
         typeof page === 'string' ? (
-          <span key={`ellipsis-${index}`} className="px-2 text-text-secondary">
+          <span key={`ellipsis-${index}`} className="w-8 h-8 flex items-center justify-center text-gray-400">
             {page}
           </span>
         ) : (
-          <Button
+          <button
             key={page}
-            variant={currentPage === page ? 'primary' : 'ghost'}
-            size="sm"
             onClick={() => onPageChange(page)}
-            className={`w-8 px-0 ${currentPage === page ? 'bg-accent-blue hover:bg-accent-blue-dark' : ''}`}
+            className={`w-8 h-8 flex items-center justify-center rounded border text-sm transition-colors ${
+              currentPage === page
+                ? 'border-brand-primary bg-brand-primary text-white'
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+            }`}
           >
             {page + 1}
-          </Button>
+          </button>
         )
       )}
 
-      <Button
-        variant="secondary"
-        size="sm"
+      <button
         onClick={() => onPageChange(Math.min(totalPages - 1, currentPage + 1))}
         disabled={currentPage === totalPages - 1}
-        className="w-8 px-0"
+        className="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         ›
-      </Button>
+      </button>
     </div>
   )
 }

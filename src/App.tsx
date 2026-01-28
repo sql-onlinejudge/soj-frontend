@@ -5,6 +5,7 @@ import { Header } from './components/common/Header'
 import { ComingSoonModal } from './components/common/ComingSoonModal'
 import { HomePage } from './pages/HomePage'
 import { ProblemPage } from './pages/ProblemPage'
+import { NotFoundPage } from './pages/NotFoundPage'
 
 function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/problems/:problemId" element={<ProblemPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
 

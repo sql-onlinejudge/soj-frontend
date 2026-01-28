@@ -49,21 +49,26 @@ function parseAnswerToTable(answer: string): { rows: string[][] } | null {
   return { rows }
 }
 
-function parseInsertSQL(sql: string): { rows: string[][] } | null {
-  if (!sql) return null
-  const valuesMatch = sql.match(/VALUES\s*(.+)$/i)
-  if (!valuesMatch) return null
+function parseInsertSQL(sql: string): { tableName: string; rows: string[][] }[] {
+  if (!sql) return []
+  const tables: { tableName: string; rows: string[][] }[] = []
+  const insertRegex = /INSERT\s+INTO\s+(\w+).*?VALUES\s*(.+?)(?:;|$)/gi
 
-  const rows: string[][] = []
-  const tupleRegex = /\(([^)]+)\)/g
   let match
-  while ((match = tupleRegex.exec(valuesMatch[1])) !== null) {
-    const values = match[1].split(',').map(v => v.trim().replace(/^'|'$/g, ''))
-    rows.push(values)
+  while ((match = insertRegex.exec(sql)) !== null) {
+    const tableName = match[1]
+    const rows: string[][] = []
+    const tupleRegex = /\(([^)]+)\)/g
+    let tupleMatch
+    while ((tupleMatch = tupleRegex.exec(match[2])) !== null) {
+      const values = tupleMatch[1].split(',').map(v => v.trim().replace(/^'|'$/g, ''))
+      rows.push(values)
+    }
+    if (rows.length > 0) {
+      tables.push({ tableName, rows })
+    }
   }
-
-  if (rows.length === 0) return null
-  return { rows }
+  return tables
 }
 
 function DataTable({ rows }: { rows: string[][] }) {
@@ -109,7 +114,7 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: { nam
 }
 
 function TestcaseTable({ testcase, index }: { testcase: Testcase; index: number }) {
-  const initParsed = parseInsertSQL(testcase.initSql)
+  const initTables = parseInsertSQL(testcase.initSql)
   const answerParsed = parseAnswerToTable(testcase.answer)
 
   return (
@@ -117,9 +122,14 @@ function TestcaseTable({ testcase, index }: { testcase: Testcase; index: number 
       <h3 className="text-base font-bold text-text-primary mb-2">테스트 케이스 #{index + 1}</h3>
 
       <p className="text-sm text-text-secondary mb-1">초기 데이터</p>
-      {initParsed ? (
-        <div className="mb-3">
-          <DataTable rows={initParsed.rows} />
+      {initTables.length > 0 ? (
+        <div className="mb-3 space-y-3">
+          {initTables.map((table, idx) => (
+            <div key={idx}>
+              <p className="text-xs text-text-secondary mb-1">{table.tableName}</p>
+              <DataTable rows={table.rows} />
+            </div>
+          ))}
         </div>
       ) : (
         <div className="bg-white border border-border-light rounded p-3 mb-3 overflow-x-auto">

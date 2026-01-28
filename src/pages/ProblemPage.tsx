@@ -28,6 +28,7 @@ import { SubmissionHistory } from '../components/submission/SubmissionHistory'
 import { SubmissionDetailModal } from '../components/submission/SubmissionDetailModal'
 import { ComingSoonModal } from '../components/common/ComingSoonModal'
 import { Button } from '../components/common/Button'
+import { NotFoundPage } from './NotFoundPage'
 
 export function ProblemPage() {
   const { problemId } = useParams<{ problemId: string }>()
@@ -52,6 +53,7 @@ export function ProblemPage() {
   const [selectedSubmission, setSelectedSubmission] = useState<SubmissionDetail | null>(null)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false)
+  const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
     if (!problemId) return
@@ -65,6 +67,9 @@ export function ProblemPage() {
         setProblem(problemData)
         setTestcases(testcasesData)
       } catch (error) {
+        if (error instanceof Error && error.message.includes('404')) {
+          setNotFound(true)
+        }
         console.error('Failed to fetch problem:', error)
       }
     }
@@ -196,6 +201,10 @@ export function ProblemPage() {
 
   const handleUserClick = () => {
     setIsComingSoonModalOpen(true)
+  }
+
+  if (notFound) {
+    return <NotFoundPage />
   }
 
   if (!problem) {

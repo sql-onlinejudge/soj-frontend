@@ -30,6 +30,7 @@ export function CodeEditor({
             scrollBeyondLastLine: false,
             wordWrap: 'on',
             padding: { top: 16 },
+            ariaLabel: 'SQL 쿼리 입력',
           }}
         />
       </div>

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useDebounce } from '../hooks/useDebounce'
 import { getProblems } from '../services/api'
 import type { PaginatedResponse, ProblemListItem } from '../types'
@@ -7,18 +8,51 @@ import { FilterPanel, type SortItem } from '../components/problem/FilterPanel'
 import { ProblemList } from '../components/problem/ProblemList'
 import { Pagination } from '../components/common/Pagination'
 
+function parseSortsFromUrl(sortParam: string | null): SortItem[] {
+  if (!sortParam) return [{ field: 'id', direction: 'asc' }]
+  return sortParam.split(',').map((s) => {
+    const [field, direction] = s.split(':')
+    return { field, direction: direction as 'asc' | 'desc' }
+  })
+}
+
+function sortsToUrl(sorts: SortItem[]): string {
+  return sorts.map((s) => `${s.field}:${s.direction}`).join(',')
+}
+
 export function HomePage() {
-  const [keyword, setKeyword] = useState('')
-  const [minDifficulty, setMinDifficulty] = useState(1)
-  const [maxDifficulty, setMaxDifficulty] = useState(5)
-  const [sorts, setSorts] = useState<SortItem[]>([{ field: 'id', direction: 'asc' }])
-  const [page, setPage] = useState(0)
-  const [data, setData] = useState<PaginatedResponse<ProblemListItem> | null>(
-    null
-  )
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const initialKeyword = searchParams.get('q') || ''
+  const initialPage = Number(searchParams.get('page')) || 0
+  const initialMinDiff = Number(searchParams.get('minDiff')) || 1
+  const initialMaxDiff = Number(searchParams.get('maxDiff')) || 5
+  const initialSorts = parseSortsFromUrl(searchParams.get('sort'))
+
+  const [keyword, setKeyword] = useState(initialKeyword)
+  const [minDifficulty, setMinDifficulty] = useState(initialMinDiff)
+  const [maxDifficulty, setMaxDifficulty] = useState(initialMaxDiff)
+  const [sorts, setSorts] = useState<SortItem[]>(initialSorts)
+  const [page, setPage] = useState(initialPage)
+  const [data, setData] = useState<PaginatedResponse<ProblemListItem> | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const debouncedKeyword = useDebounce(keyword, 300)
+
+  const updateUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    if (debouncedKeyword) params.set('q', debouncedKeyword)
+    if (page > 0) params.set('page', String(page))
+    if (minDifficulty > 1) params.set('minDiff', String(minDifficulty))
+    if (maxDifficulty < 5) params.set('maxDiff', String(maxDifficulty))
+    const defaultSort = sorts.length === 1 && sorts[0].field === 'id' && sorts[0].direction === 'asc'
+    if (!defaultSort) params.set('sort', sortsToUrl(sorts))
+    setSearchParams(params, { replace: true })
+  }, [debouncedKeyword, page, minDifficulty, maxDifficulty, sorts, setSearchParams])
+
+  useEffect(() => {
+    updateUrl()
+  }, [updateUrl])
 
   useEffect(() => {
     setPage(0)

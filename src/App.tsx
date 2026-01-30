@@ -30,8 +30,8 @@ function App() {
         position="bottom-right"
         toastOptions={{
           style: {
-            background: '#333',
-            color: '#fff',
+            background: 'var(--color-surface-dark)',
+            color: 'var(--color-text-light)',
             padding: '16px',
             borderRadius: '8px',
           },

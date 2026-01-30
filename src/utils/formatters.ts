@@ -1,7 +1,24 @@
 import type { SubmissionStatus, Verdict } from '../types'
 
+const numberFormatter = new Intl.NumberFormat('ko-KR')
+
+const dateFormatter = new Intl.DateTimeFormat('ko-KR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
+
+const dateTimeFormatter = new Intl.DateTimeFormat('ko-KR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  weekday: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+})
+
 export function formatNumber(num: number): string {
-  return num.toLocaleString('ko-KR')
+  return numberFormatter.format(num)
 }
 
 export function formatRelativeTime(dateString: string): string {
@@ -18,23 +35,12 @@ export function formatRelativeTime(dateString: string): string {
   if (diffHour < 24) return `${diffHour}시간 전`
   if (diffDay < 7) return `${diffDay}일 전`
 
-  return date.toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  return dateFormatter.format(date)
 }
 
 export function formatDateTime(dateString: string): string {
   const date = new Date(dateString)
-  return date.toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  return dateTimeFormatter.format(date)
 }
 
 export function getVerdictText(

@@ -1,5 +1,5 @@
 import Markdown from 'react-markdown'
-import type { ProblemDetail, Testcase } from '../../types'
+import type { AnswerMetadata, ColumnMetadata, InitMetadata, ProblemDetail, Testcase } from '../../types'
 import { formatNumber } from '../../utils/formatters'
 import { DifficultyBadge } from '../badges/DifficultyBadge'
 import { StatusBadge } from '../badges/StatusBadge'
@@ -9,77 +9,62 @@ interface ProblemDescriptionProps {
   testcases: Testcase[]
 }
 
-function parseCreateTableSQL(sql: string): { tableName: string; columns: { name: string; type: string }[] }[] {
-  const tables: { tableName: string; columns: { name: string; type: string }[] }[] = []
-  const createTableRegex = /CREATE\s+TABLE\s+(\w+)\s*\((.+?)\)(?:;|$)/gi
 
-  let match
-  while ((match = createTableRegex.exec(sql)) !== null) {
-    const tableName = match[1]
-    const columnsStr = match[2]
-    const columns: { name: string; type: string }[] = []
-
-    const columnLines = columnsStr.split(',').map(line => line.trim()).filter(line => line)
-    for (const line of columnLines) {
-      if (line.toUpperCase().startsWith('PRIMARY KEY') ||
-          line.toUpperCase().startsWith('FOREIGN KEY') ||
-          line.toUpperCase().startsWith('CONSTRAINT')) {
-        continue
-      }
-      const parts = line.split(/\s+/)
-      if (parts.length >= 2) {
-        columns.push({ name: parts[0], type: parts.slice(1).join(' ') })
-      }
-    }
-
-    tables.push({ tableName, columns })
-  }
-
-  return tables
+function InitDataTable({ initMetadata }: { initMetadata: InitMetadata }) {
+  return (
+    <div className="space-y-3">
+      {initMetadata.statements.map((stmt, idx) => {
+        const columns = stmt.rows.length > 0 ? Object.keys(stmt.rows[0]) : []
+        return (
+          <div key={idx}>
+            <p className="text-xs text-text-secondary mb-1">{stmt.table}</p>
+            <div className="overflow-x-auto">
+              <table className="w-full border border-border-light text-sm">
+                <thead>
+                  <tr className="bg-[rgba(0,0,0,0.06)]">
+                    {columns.map(col => (
+                      <th key={col} className="border border-border-light px-3 py-2 text-left font-semibold">{col}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {stmt.rows.map((row, rowIdx) => (
+                    <tr key={rowIdx} className="bg-white">
+                      {columns.map(col => (
+                        <td key={col} className="border border-border-light px-3 py-2">
+                          {row[col] != null ? String(row[col]) : 'NULL'}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
-function parseAnswerToTable(answer: string): { rows: string[][] } | null {
-  const lines = answer.trim().split('\n').filter(line => line.trim())
-  if (lines.length === 0) return null
-
-  const rows = lines.map(line => line.split('\t'))
-  const colCount = rows[0].length
-  if (colCount < 2 || rows.some(r => r.length !== colCount)) return null
-
-  return { rows }
-}
-
-function parseInsertSQL(sql: string): { tableName: string; rows: string[][] }[] {
-  if (!sql) return []
-  const tables: { tableName: string; rows: string[][] }[] = []
-  const insertRegex = /INSERT\s+INTO\s+(\w+).*?VALUES\s*(.+?)(?:;|$)/gi
-
-  let match
-  while ((match = insertRegex.exec(sql)) !== null) {
-    const tableName = match[1]
-    const rows: string[][] = []
-    const tupleRegex = /\(([^)]+)\)/g
-    let tupleMatch
-    while ((tupleMatch = tupleRegex.exec(match[2])) !== null) {
-      const values = tupleMatch[1].split(',').map(v => v.trim().replace(/^'|'$/g, ''))
-      rows.push(values)
-    }
-    if (rows.length > 0) {
-      tables.push({ tableName, rows })
-    }
-  }
-  return tables
-}
-
-function DataTable({ rows }: { rows: string[][] }) {
+function AnswerTable({ answerMetadata }: { answerMetadata: AnswerMetadata }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border border-border-light text-sm">
+        <thead>
+          <tr className="bg-[rgba(0,0,0,0.06)]">
+            {answerMetadata.columns.map(col => (
+              <th key={col} className="border border-border-light px-3 py-2 text-left font-semibold">{col}</th>
+            ))}
+          </tr>
+        </thead>
         <tbody>
-          {rows.map((row, i) => (
+          {answerMetadata.rows.map((row, i) => (
             <tr key={i} className="bg-white">
               {row.map((cell, j) => (
-                <td key={j} className="border border-border-light px-3 py-2">{cell}</td>
+                <td key={j} className="border border-border-light px-3 py-2">
+                  {cell != null ? String(cell) : 'NULL'}
+                </td>
               ))}
             </tr>
           ))}
@@ -89,7 +74,7 @@ function DataTable({ rows }: { rows: string[][] }) {
   )
 }
 
-function SchemaTable({ tableName, columns }: { tableName: string; columns: { name: string; type: string }[] }) {
+function SchemaTable({ tableName, columns }: { tableName: string; columns: ColumnMetadata[] }) {
   return (
     <div className="mb-4">
       <p className="text-sm font-medium text-text-primary mb-2">{tableName}</p>
@@ -98,6 +83,7 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: { nam
           <tr className="bg-[rgba(0,0,0,0.06)]">
             <th className="border border-border-light px-3 py-2 text-left font-semibold">Column</th>
             <th className="border border-border-light px-3 py-2 text-left font-semibold">Type</th>
+            <th className="border border-border-light px-3 py-2 text-left font-semibold">Constraints</th>
           </tr>
         </thead>
         <tbody>
@@ -105,6 +91,7 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: { nam
             <tr key={idx} className="bg-white">
               <td className="border border-border-light px-3 py-2">{col.name}</td>
               <td className="border border-border-light px-3 py-2">{col.type}</td>
+              <td className="border border-border-light px-3 py-2">{col.constraints.join(' ')}</td>
             </tr>
           ))}
         </tbody>
@@ -114,44 +101,30 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: { nam
 }
 
 function TestcaseTable({ testcase, index }: { testcase: Testcase; index: number }) {
-  const initTables = parseInsertSQL(testcase.initSql)
-  const answerParsed = parseAnswerToTable(testcase.answer)
-
   return (
     <div className="mb-6">
       <h3 className="text-base font-bold text-text-primary mb-2">테스트 케이스 #{index + 1}</h3>
 
-      <p className="text-sm text-text-secondary mb-1">초기 데이터</p>
-      {initTables.length > 0 ? (
-        <div className="mb-3 space-y-3">
-          {initTables.map((table, idx) => (
-            <div key={idx}>
-              <p className="text-xs text-text-secondary mb-1">{table.tableName}</p>
-              <DataTable rows={table.rows} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="bg-white border border-border-light rounded p-3 mb-3 overflow-x-auto">
-          <pre className="text-xs font-mono text-black whitespace-pre-wrap">{testcase.initSql || '(없음)'}</pre>
-        </div>
+      {testcase.initMetadata && (
+        <>
+          <p className="text-sm text-text-secondary mb-1">초기 데이터</p>
+          <div className="mb-3">
+            <InitDataTable initMetadata={testcase.initMetadata} />
+          </div>
+        </>
       )}
 
-      <p className="text-sm text-text-secondary mb-1">예상 결과</p>
-      {answerParsed ? (
-        <DataTable rows={answerParsed.rows} />
-      ) : (
-        <div className="bg-white border border-border-light rounded p-3 overflow-x-auto">
-          <pre className="text-xs font-mono text-black whitespace-pre-wrap">{testcase.answer}</pre>
-        </div>
+      {testcase.answerMetadata && (
+        <>
+          <p className="text-sm text-text-secondary mb-1">예상 결과</p>
+          <AnswerTable answerMetadata={testcase.answerMetadata} />
+        </>
       )}
     </div>
   )
 }
 
 export function ProblemDescription({ problem, testcases }: ProblemDescriptionProps) {
-  const tables = parseCreateTableSQL(problem.schemaSql)
-
   return (
     <div className="bg-surface-background h-full overflow-auto">
       <div className="p-6">
@@ -176,9 +149,9 @@ export function ProblemDescription({ problem, testcases }: ProblemDescriptionPro
 
         <section className="mb-6">
           <h2 className="text-base font-bold text-text-primary mb-2">테이블 스키마</h2>
-          {tables.length > 0 ? (
-            tables.map((table, idx) => (
-              <SchemaTable key={idx} tableName={table.tableName} columns={table.columns} />
+          {problem.schemaMetadata ? (
+            problem.schemaMetadata.tables.map((table, idx) => (
+              <SchemaTable key={idx} tableName={table.name} columns={table.columns} />
             ))
           ) : (
             <div className="bg-white border border-border-light rounded p-4 overflow-x-auto">

@@ -25,8 +25,8 @@ export function JudgeResult({ status, verdict, query }: JudgeResultProps) {
 
       <div>
         <p className="text-sm text-white mb-2">제출한 쿼리</p>
-        <div className="bg-surface-dark rounded p-4 overflow-x-auto">
-          <pre className="text-base font-mono">
+        <div className="bg-surface-dark rounded p-4 overflow-x-auto max-w-full">
+          <pre className="text-base font-mono whitespace-pre-wrap break-words">
             <span className="text-accent-pink">SELECT </span>
             <span className="text-text-light">
               {query.replace(/^SELECT\s*/i, '')}

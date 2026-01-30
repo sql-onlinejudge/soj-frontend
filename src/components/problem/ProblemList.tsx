@@ -9,7 +9,7 @@ interface ProblemListProps {
 export function ProblemList({ problems, isLoading }: ProblemListProps) {
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg p-8 text-center text-gray-500">
+      <div className="bg-white rounded-lg p-8 text-center text-text-secondary" role="status">
         로딩 중...
       </div>
     )
@@ -17,7 +17,7 @@ export function ProblemList({ problems, isLoading }: ProblemListProps) {
 
   if (problems.length === 0) {
     return (
-      <div className="bg-white rounded-lg p-8 text-center text-gray-500">
+      <div className="bg-white rounded-lg p-8 text-center text-text-secondary" role="status">
         문제가 없습니다.
       </div>
     )

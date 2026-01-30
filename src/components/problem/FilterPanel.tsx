@@ -27,20 +27,21 @@ export function FilterPanel({
 }: FilterPanelProps) {
   return (
     <div className="border border-gray-200 rounded-lg p-4 w-full bg-white">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">필터</h3>
+      <h3 className="text-base font-semibold text-gray-900 mb-4">필터</h3>
 
       <div className="mb-4">
-        <label className="text-sm text-gray-700">
+        <label id="difficulty-label" className="text-sm text-gray-700">
           난이도 Lv.{minDifficulty} ~ Lv.{maxDifficulty}
         </label>
         <div className="relative mt-4 h-5 mx-1">
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-200 rounded-full" />
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-200 rounded-full" aria-hidden="true" />
           <div
             className="absolute top-1/2 -translate-y-1/2 h-1 bg-brand-primary rounded-full"
             style={{
               left: `${((minDifficulty - 1) / 4) * 100}%`,
               right: `${((5 - maxDifficulty) / 4) * 100}%`,
             }}
+            aria-hidden="true"
           />
           <input
             type="range"
@@ -52,7 +53,11 @@ export function FilterPanel({
               const val = Number(e.target.value)
               if (val <= maxDifficulty) onDifficultyChange(val, maxDifficulty)
             }}
-            className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
+            aria-label="최소 난이도"
+            aria-valuemin={1}
+            aria-valuemax={5}
+            aria-valuenow={minDifficulty}
+            className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none touch-manipulation [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
             style={{ zIndex: minDifficulty > 3 ? 5 : 3 }}
           />
           <input
@@ -65,11 +70,15 @@ export function FilterPanel({
               const val = Number(e.target.value)
               if (val >= minDifficulty) onDifficultyChange(minDifficulty, val)
             }}
-            className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
+            aria-label="최대 난이도"
+            aria-valuemin={1}
+            aria-valuemax={5}
+            aria-valuenow={maxDifficulty}
+            className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none touch-manipulation [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
             style={{ zIndex: maxDifficulty <= 3 ? 5 : 3 }}
           />
         </div>
-        <div className="flex justify-between mt-1 text-xs text-gray-400 mx-1">
+        <div className="flex justify-between mt-1 text-xs text-gray-400 mx-1" aria-hidden="true">
           {[1, 2, 3, 4, 5].map((level) => (
             <span key={level}>{level}</span>
           ))}
@@ -109,12 +118,15 @@ export function FilterPanel({
               <div key={option.value} className="flex items-center gap-2">
                 <button
                   onClick={handleToggle}
-                  className={`w-4 h-4 rounded flex items-center justify-center transition-colors ${
+                  role="checkbox"
+                  aria-checked={isSelected}
+                  aria-label={`${option.label} 정렬 ${isSelected ? '해제' : '선택'}`}
+                  className={`w-5 h-5 rounded flex items-center justify-center transition-colors focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 ${
                     isSelected ? 'bg-brand-primary' : 'border border-gray-300 hover:border-gray-400'
                   }`}
                 >
                   {isSelected && (
-                    <span className="text-white text-[10px] font-bold">✓</span>
+                    <span className="text-white text-[10px] font-bold" aria-hidden="true">✓</span>
                   )}
                 </button>
                 <span className="text-sm text-gray-700 flex-1">
@@ -126,6 +138,7 @@ export function FilterPanel({
                 {isSelected && (
                   <button
                     onClick={handleDirectionToggle}
+                    aria-label={`${option.label} ${direction === 'asc' ? '내림차순으로 변경' : '오름차순으로 변경'}`}
                     className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1 transition-colors"
                   >
                     <svg
@@ -133,6 +146,7 @@ export function FilterPanel({
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                     </svg>

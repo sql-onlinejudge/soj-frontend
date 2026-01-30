@@ -18,10 +18,14 @@ export function TabPanel({
 }: TabPanelProps) {
   return (
     <div className="bg-surface-muted h-full flex flex-col">
-      <div className="flex gap-3 px-5 pt-3">
+      <div className="flex gap-3 px-5 pt-3" role="tablist" aria-label="결과 탭">
         {tabs.map((tab) => (
           <button
             key={tab.id}
+            role="tab"
+            id={`tab-${tab.id}`}
+            aria-selected={activeTab === tab.id}
+            aria-controls={`tabpanel-${tab.id}`}
             onClick={() => onTabChange(tab.id)}
             className={`text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === tab.id
@@ -33,7 +37,14 @@ export function TabPanel({
           </button>
         ))}
       </div>
-      <div className="flex-1 overflow-auto">{children}</div>
+      <div
+        className="flex-1 overflow-auto"
+        role="tabpanel"
+        id={`tabpanel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
+      >
+        {children}
+      </div>
     </div>
   )
 }

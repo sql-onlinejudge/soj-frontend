@@ -23,7 +23,7 @@ export function Pagination({
       pages.push(0)
 
       if (currentPage > 2) {
-        pages.push('...')
+        pages.push('…')
       }
 
       const start = Math.max(1, currentPage - 1)
@@ -36,7 +36,7 @@ export function Pagination({
       }
 
       if (currentPage < totalPages - 3) {
-        pages.push('...')
+        pages.push('…')
       }
 
       if (!pages.includes(totalPages - 1)) {
@@ -48,29 +48,32 @@ export function Pagination({
   }
 
   return (
-    <div className="flex items-center justify-center gap-1 mt-6">
+    <nav className="flex items-center justify-center gap-1 mt-6" aria-label="페이지 네비게이션">
       <button
         onClick={() => onPageChange(Math.max(0, currentPage - 1))}
         disabled={currentPage === 0}
-        className="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-10 h-10 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        aria-label="이전 페이지"
       >
         ‹
       </button>
 
       {getVisiblePages().map((page, index) =>
         typeof page === 'string' ? (
-          <span key={`ellipsis-${index}`} className="w-8 h-8 flex items-center justify-center text-gray-400">
-            {page}
+          <span key={`ellipsis-${index}`} className="w-10 h-10 flex items-center justify-center text-gray-400" aria-hidden="true">
+            …
           </span>
         ) : (
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`w-8 h-8 flex items-center justify-center rounded border text-sm transition-colors ${
+            className={`w-10 h-10 flex items-center justify-center rounded border text-sm transition-all ${
               currentPage === page
                 ? 'border-brand-primary bg-brand-primary text-white'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:shadow-sm'
             }`}
+            aria-label={`${page + 1} 페이지`}
+            aria-current={currentPage === page ? 'page' : undefined}
           >
             {page + 1}
           </button>
@@ -80,10 +83,11 @@ export function Pagination({
       <button
         onClick={() => onPageChange(Math.min(totalPages - 1, currentPage + 1))}
         disabled={currentPage === totalPages - 1}
-        className="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-10 h-10 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        aria-label="다음 페이지"
       >
         ›
       </button>
-    </div>
+    </nav>
   )
 }

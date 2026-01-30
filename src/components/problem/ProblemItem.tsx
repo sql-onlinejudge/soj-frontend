@@ -12,11 +12,14 @@ export function ProblemItem({ problem }: ProblemItemProps) {
   return (
     <Link
       to={`/problems/${problem.id}`}
-      className="group flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 transition-colors"
+      className="group flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 hover:bg-gray-50 transition-colors"
     >
       <div className="flex items-center gap-3 min-w-0">
         <DifficultyBadge level={problem.difficulty} />
-        <span className="text-sm font-semibold text-gray-900 group-hover:text-brand-primary truncate transition-colors">
+        <span
+          title={`#${problem.id} ${problem.title}`}
+          className="text-sm font-semibold text-gray-900 group-hover:text-teal-700 truncate transition-colors"
+        >
           #{problem.id} {problem.title}
         </span>
       </div>

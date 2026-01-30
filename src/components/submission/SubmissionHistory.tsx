@@ -20,11 +20,11 @@ export function SubmissionHistory({
   currentSubmissionId,
 }: SubmissionHistoryProps) {
   if (isLoading) {
-    return <div className="p-5 text-text-muted">로딩 중...</div>
+    return <div className="p-5 text-text-muted" role="status">로딩 중...</div>
   }
 
   if (submissions.length === 0) {
-    return <div className="p-5 text-text-muted">제출 기록이 없습니다.</div>
+    return <div className="p-5 text-text-muted" role="status">제출 기록이 없습니다.</div>
   }
 
   return (
@@ -49,7 +49,8 @@ export function SubmissionHistory({
             }`}
             tabIndex={0}
             role="button"
-            onKeyDown={(e) => e.key === 'Enter' && onSubmissionClick(submission)}
+            aria-label={`제출 ${submission.id}번 상세 보기`}
+            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSubmissionClick(submission)}
           >
             <div className="hidden lg:grid grid-cols-5 gap-4 items-center text-sm text-white">
               <span>#{submission.id}</span>
@@ -72,6 +73,7 @@ export function SubmissionHistory({
                   e.stopPropagation()
                   onUserClick(submission.userId)
                 }}
+                title={submission.userId}
                 className="text-left hover:text-brand-primary transition-colors truncate"
               >
                 {truncateUserId(submission.userId)}

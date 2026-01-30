@@ -21,7 +21,7 @@ export function SubmissionDetailModal({
   if (!submission) return null
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="w-[800px] max-w-[90vw]">
+    <Modal isOpen={isOpen} onClose={onClose} className="w-[800px] max-w-[90vw]" ariaLabel="제출 상세 정보">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-xl text-white">#{submission.id} 제출 상세</h2>
@@ -39,6 +39,7 @@ export function SubmissionDetailModal({
                 onProblemClick(submission.problemId)
                 onClose()
               }}
+              aria-label={`문제 ${submission.problemId}번으로 이동`}
               className="text-sm text-white hover:text-brand-primary transition-colors"
             >
               #{submission.problemId}
@@ -65,6 +66,7 @@ export function SubmissionDetailModal({
             <p className="text-sm font-semibold text-white mb-1">푼 사람</p>
             <button
               onClick={() => onUserClick(submission.userId)}
+              aria-label={`사용자 ${submission.userId} 프로필 보기`}
               className="text-sm text-white hover:text-brand-primary transition-colors"
             >
               {submission.userId}

@@ -17,7 +17,7 @@ export function TabPanel({
   children,
 }: TabPanelProps) {
   return (
-    <div className="bg-surface-muted h-full flex flex-col">
+    <div className="bg-surface-dark h-full flex flex-col">
       <div className="flex gap-3 px-5 pt-3" role="tablist" aria-label="결과 탭">
         {tabs.map((tab) => (
           <button

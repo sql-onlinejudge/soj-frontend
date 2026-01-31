@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { Allotment } from 'allotment'
+import 'allotment/dist/style.css'
 import {
   getProblem,
   getTestcases,
@@ -217,62 +219,121 @@ export function ProblemPage() {
 
   return (
     <>
-      <div className="min-h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-3.5rem)] flex flex-col lg:flex-row">
-        <div className="w-full lg:w-[570px] lg:shrink-0 overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-border-light bg-white">
-            <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-              <span className="mr-1">←</span> 목록으로
-            </Button>
-          </div>
-          <div className="flex-1 overflow-hidden">
-            <ProblemDescription problem={problem} testcases={testcases} />
-          </div>
+      <div className="h-[calc(100vh-3.5rem)] hidden lg:block">
+        <Allotment>
+          <Allotment.Pane preferredSize={570} minSize={300} maxSize={1000}>
+            <div className="h-full flex flex-col overflow-hidden bg-white">
+              <div className="p-4 border-b border-gray-200">
+                <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+                  <span className="mr-1">←</span> 목록으로
+                </Button>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <ProblemDescription problem={problem} testcases={testcases} />
+              </div>
+            </div>
+          </Allotment.Pane>
+
+          <Allotment.Pane>
+            <Allotment vertical>
+              <Allotment.Pane preferredSize="55%" minSize={100}>
+                <CodeEditor
+                  value={code}
+                  onChange={setCode}
+                  onSubmit={handleSubmit}
+                  isSubmitting={isSubmitting}
+                />
+              </Allotment.Pane>
+
+              <Allotment.Pane minSize={100}>
+                <TabPanelContainer
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                >
+                  {(tab) => {
+                    if (tab === 'execution') {
+                      return <ExecutionResult result={null} />
+                    }
+                    if (tab === 'judge') {
+                      return (
+                        <JudgeResult
+                          status={currentStatus}
+                          verdict={currentVerdict}
+                          query={currentQuery}
+                        />
+                      )
+                    }
+                    if (tab === 'history') {
+                      return (
+                        <SubmissionHistory
+                          submissions={submissions}
+                          isLoading={isLoadingSubmissions}
+                          onSubmissionClick={handleSubmissionClick}
+                          onProblemClick={handleProblemClick}
+                          onUserClick={handleUserClick}
+                          currentSubmissionId={currentSubmissionId}
+                        />
+                      )
+                    }
+                    return null
+                  }}
+                </TabPanelContainer>
+              </Allotment.Pane>
+            </Allotment>
+          </Allotment.Pane>
+        </Allotment>
+      </div>
+
+      <div className="lg:hidden min-h-[calc(100vh-3.5rem)] flex flex-col">
+        <div className="p-4 border-b border-gray-200 bg-white">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+            <span className="mr-1">←</span> 목록으로
+          </Button>
         </div>
-
-        <div className="flex-1 flex flex-col">
-          <div className="h-[400px] lg:h-[45%] min-h-0">
-            <CodeEditor
-              value={code}
-              onChange={setCode}
-              onSubmit={handleSubmit}
-              isSubmitting={isSubmitting}
-            />
-          </div>
-
-          <div className="h-[400px] lg:flex-1 lg:h-auto min-h-0">
-            <TabPanelContainer
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-            >
-              {(tab) => {
-                if (tab === 'execution') {
-                  return <ExecutionResult result={null} />
-                }
-                if (tab === 'judge') {
-                  return (
-                    <JudgeResult
-                      status={currentStatus}
-                      verdict={currentVerdict}
-                      query={currentQuery}
-                    />
-                  )
-                }
-                if (tab === 'history') {
-                  return (
-                    <SubmissionHistory
-                      submissions={submissions}
-                      isLoading={isLoadingSubmissions}
-                      onSubmissionClick={handleSubmissionClick}
-                      onProblemClick={handleProblemClick}
-                      onUserClick={handleUserClick}
-                      currentSubmissionId={currentSubmissionId}
-                    />
-                  )
-                }
-                return null
-              }}
-            </TabPanelContainer>
-          </div>
+        <div className="h-[50vh] overflow-hidden">
+          <ProblemDescription problem={problem} testcases={testcases} />
+        </div>
+        <div className="h-[300px]">
+          <CodeEditor
+            value={code}
+            onChange={setCode}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+          />
+        </div>
+        <div className="flex-1 min-h-[300px]">
+          <TabPanelContainer
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          >
+            {(tab) => {
+              if (tab === 'execution') {
+                return <ExecutionResult result={null} />
+              }
+              if (tab === 'judge') {
+                return (
+                  <JudgeResult
+                    status={currentStatus}
+                    verdict={currentVerdict}
+                    query={currentQuery}
+                  />
+                )
+              }
+              if (tab === 'history') {
+                return (
+                  <SubmissionHistory
+                    submissions={submissions}
+                    isLoading={isLoadingSubmissions}
+                    onSubmissionClick={handleSubmissionClick}
+                    onProblemClick={handleProblemClick}
+                    onUserClick={handleUserClick}
+                    currentSubmissionId={currentSubmissionId}
+                  />
+                )
+              }
+              return null
+            }}
+          </TabPanelContainer>
         </div>
       </div>
 

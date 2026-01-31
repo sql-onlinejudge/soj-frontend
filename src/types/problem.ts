@@ -3,6 +3,7 @@ export type TrialStatus = 'NOT_ATTEMPTED' | 'ATTEMPTED' | 'SOLVED'
 export interface ColumnMetadata {
   name: string
   type: string
+  nullable?: boolean
   constraints: string[]
 }
 

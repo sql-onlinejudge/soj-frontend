@@ -6,7 +6,7 @@ interface HeaderProps {
 
 export function Header({ onLoginClick }: HeaderProps) {
   return (
-    <header className="bg-white border-b border-gray-300 h-14 w-full">
+    <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 h-14 w-full sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
         <Link
           to="/"

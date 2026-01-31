@@ -21,7 +21,7 @@ function InitDataTable({ initMetadata }: { initMetadata: InitMetadata }) {
             <div className="overflow-x-auto">
               <table className="w-full border border-border-light text-sm">
                 <thead>
-                  <tr className="bg-[rgba(0,0,0,0.06)]">
+                  <tr className="bg-teal-50">
                     {columns.map(col => (
                       <th key={col} className="border border-border-light px-3 py-2 text-left font-semibold">{col}</th>
                     ))}
@@ -52,7 +52,7 @@ function AnswerTable({ answerMetadata }: { answerMetadata: AnswerMetadata }) {
     <div className="overflow-x-auto">
       <table className="w-full border border-border-light text-sm">
         <thead>
-          <tr className="bg-[rgba(0,0,0,0.06)]">
+          <tr className="bg-teal-50">
             {answerMetadata.columns.map(col => (
               <th key={col} className="border border-border-light px-3 py-2 text-left font-semibold">{col}</th>
             ))}
@@ -80,9 +80,10 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: Colum
       <p className="text-sm font-medium text-text-primary mb-2">{tableName}</p>
       <table className="w-full border border-border-light rounded text-sm">
         <thead>
-          <tr className="bg-[rgba(0,0,0,0.06)]">
+          <tr className="bg-teal-50">
             <th className="border border-border-light px-3 py-2 text-left font-semibold">Column</th>
             <th className="border border-border-light px-3 py-2 text-left font-semibold">Type</th>
+            <th className="border border-border-light px-3 py-2 text-left font-semibold">Nullable</th>
             <th className="border border-border-light px-3 py-2 text-left font-semibold">Constraints</th>
           </tr>
         </thead>
@@ -91,6 +92,7 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: Colum
             <tr key={idx} className="bg-white">
               <td className="border border-border-light px-3 py-2">{col.name}</td>
               <td className="border border-border-light px-3 py-2">{col.type}</td>
+              <td className="border border-border-light px-3 py-2">{(col.nullable ?? true) ? 'Yes' : 'No'}</td>
               <td className="border border-border-light px-3 py-2">{col.constraints.join(' ')}</td>
             </tr>
           ))}
@@ -126,7 +128,7 @@ function TestcaseTable({ testcase, index }: { testcase: Testcase; index: number 
 
 export function ProblemDescription({ problem, testcases }: ProblemDescriptionProps) {
   return (
-    <div className="bg-surface-background h-full overflow-auto">
+    <div className="bg-white h-full overflow-auto">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-2 flex-wrap">
           <h1 className="text-xl font-medium text-text-primary">

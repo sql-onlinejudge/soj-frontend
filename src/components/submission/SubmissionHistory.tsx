@@ -28,82 +28,64 @@ export function SubmissionHistory({
   }
 
   return (
-    <div className="p-5">
-      <div className="hidden lg:grid grid-cols-5 gap-4 text-sm text-text-light mb-3 px-4">
-        <span>제출 번호</span>
-        <span>결과</span>
-        <span>문제 번호</span>
-        <span>제출 시간</span>
-        <span>푼 사람</span>
-      </div>
-
-      <div className="space-y-3">
-        {submissions.map((submission) => (
-          <div
-            key={submission.id}
-            onClick={() => onSubmissionClick(submission)}
-            className={`bg-surface-card rounded-lg p-4 cursor-pointer hover:bg-surface-card-hover transition-all focus-visible:ring-2 focus-visible:ring-ring ${
-              currentSubmissionId === submission.id
-                ? 'border-2 border-brand-primary shadow-sm'
-                : 'border-2 border-transparent hover:shadow-sm'
-            }`}
-            tabIndex={0}
-            role="button"
-            aria-label={`제출 ${submission.id}번 상세 보기`}
-            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSubmissionClick(submission)}
-          >
-            <div className="hidden lg:grid grid-cols-5 gap-4 items-center text-sm text-white">
-              <span>#{submission.id}</span>
-              <VerdictBadge
-                status={submission.status}
-                verdict={submission.verdict}
-              />
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onProblemClick(submission.problemId)
-                }}
-                className="text-left hover:text-brand-primary transition-colors"
-              >
-                #{submission.problemId}
-              </button>
-              <span>{formatRelativeTime(submission.createdAt)}</span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onUserClick(submission.userId)
-                }}
-                title={submission.userId}
-                className="text-left hover:text-brand-primary transition-colors truncate"
-              >
-                {truncateUserId(submission.userId)}
-              </button>
-            </div>
-
-            <div className="lg:hidden space-y-2 text-sm text-white">
-              <div className="flex items-center justify-between">
-                <span className="text-text-muted">#{submission.id}</span>
-                <VerdictBadge
-                  status={submission.status}
-                  verdict={submission.verdict}
-                />
-              </div>
-              <div className="flex items-center justify-between text-text-muted">
+    <div className="p-4">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-text-muted border-b border-surface-medium">
+            <th className="text-left py-2 px-3 font-medium">번호</th>
+            <th className="text-left py-2 px-3 font-medium">결과</th>
+            <th className="text-left py-2 px-3 font-medium hidden sm:table-cell">문제</th>
+            <th className="text-left py-2 px-3 font-medium hidden md:table-cell">시간</th>
+            <th className="text-left py-2 px-3 font-medium hidden lg:table-cell">사용자</th>
+          </tr>
+        </thead>
+        <tbody>
+          {submissions.map((submission) => (
+            <tr
+              key={submission.id}
+              onClick={() => onSubmissionClick(submission)}
+              className={`cursor-pointer transition-colors hover:bg-surface-medium/50 ${
+                currentSubmissionId === submission.id ? 'bg-brand-primary/10' : ''
+              }`}
+              tabIndex={0}
+              role="button"
+              aria-label={`제출 ${submission.id}번 상세 보기`}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSubmissionClick(submission)}
+            >
+              <td className="py-3 px-3 text-text-light">#{submission.id}</td>
+              <td className="py-3 px-3">
+                <VerdictBadge status={submission.status} verdict={submission.verdict} />
+              </td>
+              <td className="py-3 px-3 hidden sm:table-cell">
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
                     onProblemClick(submission.problemId)
                   }}
-                  className="hover:text-brand-primary transition-colors"
+                  className="text-text-light hover:text-brand-primary transition-colors"
                 >
-                  문제 #{submission.problemId}
+                  #{submission.problemId}
                 </button>
-                <span>{formatRelativeTime(submission.createdAt)}</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+              </td>
+              <td className="py-3 px-3 text-text-muted hidden md:table-cell">
+                {formatRelativeTime(submission.createdAt)}
+              </td>
+              <td className="py-3 px-3 hidden lg:table-cell">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onUserClick(submission.userId)
+                  }}
+                  title={submission.userId}
+                  className="text-text-light hover:text-brand-primary transition-colors truncate max-w-[120px] block"
+                >
+                  {truncateUserId(submission.userId)}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

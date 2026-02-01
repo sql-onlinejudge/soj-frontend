@@ -38,6 +38,11 @@ const verdictStyles: Record<VerdictType, { bg: string; text: string; label: stri
     text: 'text-status-error-text',
     label: '런타임 에러',
   },
+  INVALID_QUERY: {
+    bg: 'bg-status-error-bg',
+    text: 'text-status-error-text',
+    label: '잘못된 쿼리',
+  },
 }
 
 export function VerdictBadge({ status, verdict }: VerdictBadgeProps) {

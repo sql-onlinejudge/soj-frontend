@@ -1,5 +1,5 @@
 export type SubmissionStatus = 'PENDING' | 'RUNNING' | 'COMPLETED'
-export type Verdict = 'ACCEPTED' | 'WRONG_ANSWER' | 'TIME_LIMIT_EXCEEDED' | 'RUNTIME_ERROR'
+export type Verdict = 'ACCEPTED' | 'WRONG_ANSWER' | 'TIME_LIMIT_EXCEEDED' | 'RUNTIME_ERROR' | 'INVALID_QUERY'
 
 export interface SubmissionListItem {
   id: number

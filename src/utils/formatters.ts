@@ -56,6 +56,7 @@ export function getVerdictText(
     WRONG_ANSWER: '오답',
     TIME_LIMIT_EXCEEDED: '시간 초과',
     RUNTIME_ERROR: '런타임 에러',
+    INVALID_QUERY: '잘못된 쿼리',
   }
   return verdictMap[verdict]
 }

@@ -10,11 +10,14 @@ function getInitialTheme(): ThemePreference {
 }
 
 function applyTheme(pref: ThemePreference) {
+  const el = document.documentElement
+  el.classList.add('theme-transitioning')
   const isDark = pref === 'dark'
-  document.documentElement.classList.toggle('dark', isDark)
+  el.classList.toggle('dark', isDark)
   document.querySelector('meta[name="color-scheme"]')
     ?.setAttribute('content', isDark ? 'dark' : 'light')
   localStorage.setItem('theme', pref)
+  setTimeout(() => el.classList.remove('theme-transitioning'), 300)
 }
 
 interface UIState {

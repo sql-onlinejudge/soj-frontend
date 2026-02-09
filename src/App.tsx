@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast'
 import { Header } from './components/common/Header'
 import { ComingSoonModal } from './components/common/ComingSoonModal'
 import { HomePage } from './pages/HomePage'
+import { ProblemsPage } from './pages/ProblemsPage'
 import { ProblemPage } from './pages/ProblemPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { useUIStore, applyTheme } from './stores/uiStore'
@@ -22,6 +23,7 @@ function App() {
         <Header onLoginClick={() => setIsLoginModalOpen(true)} />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/problems" element={<ProblemsPage />} />
           <Route path="/problems/:problemId" element={<ProblemPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

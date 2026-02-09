@@ -12,7 +12,7 @@ export function SearchInput({
   return (
     <div className="relative w-full">
       <svg
-        className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"
+        className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -29,7 +29,7 @@ export function SearchInput({
         placeholder={placeholder}
         autoComplete="off"
         aria-label="문제 검색"
-        className="w-full h-11 pl-10 pr-4 border border-gray-300 rounded-lg bg-white text-base placeholder:text-gray-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 transition-colors"
+        className="w-full h-11 pl-10 pr-4 border border-border-light rounded-lg bg-surface-panel text-text-primary text-base placeholder:text-text-secondary outline-2 outline-offset-2 outline-transparent focus-visible:outline-brand-primary transition-all duration-200"
       />
     </div>
   )

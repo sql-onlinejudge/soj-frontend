@@ -7,9 +7,18 @@ interface FilterPanelProps {
   minDifficulty: number
   maxDifficulty: number
   onDifficultyChange: (min: number, max: number) => void
+  trialStatus: string | null
+  onTrialStatusChange: (status: string | null) => void
   sorts: SortItem[]
   onSortsChange: (sorts: SortItem[]) => void
 }
+
+const trialStatusOptions = [
+  { value: null, label: '전체' },
+  { value: 'SOLVED', label: '해결' },
+  { value: 'ATTEMPTED', label: '미해결' },
+  { value: 'NOT_ATTEMPTED', label: '미시도' },
+] as const
 
 const sortOptions = [
   { value: 'id', label: '문제 번호' },
@@ -22,19 +31,21 @@ export function FilterPanel({
   minDifficulty,
   maxDifficulty,
   onDifficultyChange,
+  trialStatus,
+  onTrialStatusChange,
   sorts,
   onSortsChange,
 }: FilterPanelProps) {
   return (
-    <div className="border border-gray-200 rounded-lg p-4 w-full bg-white">
-      <h3 className="text-base font-semibold text-gray-900 mb-4">필터</h3>
+    <div className="border border-border-input rounded-lg p-4 w-full bg-surface-panel">
+      <h3 className="text-base font-semibold text-text-primary mb-4">필터</h3>
 
       <div className="mb-4">
-        <label id="difficulty-label" className="text-sm text-gray-700">
+        <label id="difficulty-label" className="text-sm text-text-secondary">
           난이도 Lv.{minDifficulty} ~ Lv.{maxDifficulty}
         </label>
         <div className="relative mt-4 h-5 mx-1">
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-200 rounded-full" aria-hidden="true" />
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-surface-light rounded-full" aria-hidden="true" />
           <div
             className="absolute top-1/2 -translate-y-1/2 h-1 bg-brand-primary rounded-full"
             style={{
@@ -57,7 +68,7 @@ export function FilterPanel({
             aria-valuemin={1}
             aria-valuemax={5}
             aria-valuenow={minDifficulty}
-            className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none touch-manipulation [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
+            className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none touch-manipulation [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-surface-bg [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
             style={{ zIndex: minDifficulty > 3 ? 5 : 3 }}
           />
           <input
@@ -74,21 +85,45 @@ export function FilterPanel({
             aria-valuemin={1}
             aria-valuemax={5}
             aria-valuenow={maxDifficulty}
-            className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none touch-manipulation [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
+            className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none touch-manipulation [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-surface-bg [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
             style={{ zIndex: maxDifficulty <= 3 ? 5 : 3 }}
           />
         </div>
-        <div className="flex justify-between mt-1 text-xs text-gray-400 mx-1" aria-hidden="true">
+        <div className="flex justify-between mt-1 text-xs text-text-muted mx-1" aria-hidden="true">
           {[1, 2, 3, 4, 5].map((level) => (
             <span key={level}>{level}</span>
           ))}
         </div>
       </div>
 
-      <div className="border-t border-gray-100 my-4" />
+      <div className="border-t border-border-input my-4" />
+
+      <div className="mb-4">
+        <label className="text-sm text-text-secondary">상태</label>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {trialStatusOptions.map((option) => {
+            const isActive = trialStatus === option.value
+            return (
+              <button
+                key={option.label}
+                onClick={() => onTrialStatusChange(option.value)}
+                className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                  isActive
+                    ? 'bg-brand-primary text-white'
+                    : 'bg-surface-muted text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                {option.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="border-t border-border-input my-4" />
 
       <div>
-        <label className="text-sm text-gray-700">정렬</label>
+        <label className="text-sm text-text-secondary">정렬</label>
         <div className="mt-2 space-y-2">
           {sortOptions.map((option) => {
             const sortItem = sorts.find((s) => s.field === option.value)
@@ -122,24 +157,24 @@ export function FilterPanel({
                   aria-checked={isSelected}
                   aria-label={`${option.label} 정렬 ${isSelected ? '해제' : '선택'}`}
                   className={`w-5 h-5 rounded flex items-center justify-center transition-colors focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 ${
-                    isSelected ? 'bg-brand-primary' : 'border border-gray-300 hover:border-gray-400'
+                    isSelected ? 'bg-brand-primary' : 'border border-border-light hover:border-text-secondary'
                   }`}
                 >
                   {isSelected && (
                     <span className="text-white text-[10px] font-bold" aria-hidden="true">✓</span>
                   )}
                 </button>
-                <span className="text-sm text-gray-700 flex-1">
+                <span className="text-sm text-text-secondary flex-1">
                   {option.label}
                   {order !== null && sorts.length > 1 && (
-                    <span className="ml-1 text-xs text-gray-400">({order})</span>
+                    <span className="ml-1 text-xs text-text-muted">({order})</span>
                   )}
                 </span>
                 {isSelected && (
                   <button
                     onClick={handleDirectionToggle}
                     aria-label={`${option.label} ${direction === 'asc' ? '내림차순으로 변경' : '오름차순으로 변경'}`}
-                    className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1 transition-colors"
+                    className="text-xs text-text-secondary hover:text-text-primary flex items-center gap-1 transition-colors"
                   >
                     <svg
                       className={`w-3 h-3 transition-transform ${direction === 'desc' ? 'rotate-180' : ''}`}

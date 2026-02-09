@@ -1,33 +1,36 @@
-@import "tailwindcss";
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* Brand Colors */
-  --color-brand-primary: #14b8a6;
-  --color-brand-primary-hover: #0d9488;
+  --color-brand-primary: #10B981;
+  --color-brand-primary-hover: #059669;
   --color-brand-gradient-from: #3bf8ff;
   --color-brand-gradient-via: #5bc8ff;
   --color-brand-gradient-to: #a24bff;
 
-  /* Surface Colors */
-  --color-surface-dark: #333;
-  --color-surface-medium: #444;
-  --color-surface-muted: #555;
-  --color-surface-card: #676767;
-  --color-surface-card-hover: #707070;
-  --color-surface-light: #dedede;
-  --color-surface-background: #f6f6f6;
-  --color-surface-panel: #fafafa;
+  /* Surface Colors - runtime switchable via var() */
+  --color-surface-bg: var(--surface-bg);
+  --color-surface-panel: var(--surface-panel);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-medium: var(--surface-medium);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-card: var(--surface-card);
+  --color-surface-card-hover: var(--surface-card-hover);
+  --color-surface-light: var(--surface-light);
+  --color-surface-background: var(--surface-bg);
 
-  /* Text Colors */
-  --color-text-primary: #1f2937;
-  --color-text-secondary: #6b7280;
-  --color-text-light: #f9fafb;
-  --color-text-muted: rgba(249, 250, 251, 0.7);
+  /* Text Colors - runtime switchable */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-light: var(--text-light);
+  --color-text-muted: var(--text-muted);
 
-  /* Border Colors */
-  --color-border-light: #d1d5db;
-  --color-border-input: #e5e7eb;
+  /* Border Colors - runtime switchable */
+  --color-border-light: var(--border-light);
+  --color-border-input: var(--border-input);
 
   /* Accent Colors */
   --color-accent-orange: #ffae6d;
@@ -36,7 +39,7 @@
   --color-accent-blue: #5bc8ff;
   --color-accent-blue-dark: #4ceaff;
 
-  /* Difficulty - Mint to Purple Gradient (Brand Colors) */
+  /* Difficulty */
   --color-difficulty-1-bg: #d0fcff;
   --color-difficulty-1-text: #0e7490;
   --color-difficulty-2-bg: #a5f3fc;
@@ -48,27 +51,27 @@
   --color-difficulty-5-bg: #a78bfa;
   --color-difficulty-5-text: #3b0764;
 
-  /* Status - Enhanced Contrast */
-  --color-status-pending-bg: #f3f4f6;
-  --color-status-pending-text: #4b5563;
-  --color-status-success-bg: #dcfce7;
-  --color-status-success-text: #166534;
-  --color-status-success-light: rgba(220, 252, 231, 0.8);
-  --color-status-error-bg: #fee2e2;
-  --color-status-error-text: #991b1b;
-  --color-status-error-light: rgba(254, 226, 226, 0.8);
-  --color-status-neutral-bg: #f3f4f6;
-  --color-status-neutral-text: #4b5563;
+  /* Status */
+  --color-status-pending-bg: var(--status-pending-bg);
+  --color-status-pending-text: var(--status-pending-text);
+  --color-status-success-bg: var(--status-success-bg);
+  --color-status-success-text: var(--status-success-text);
+  --color-status-success-light: var(--status-success-light);
+  --color-status-error-bg: var(--status-error-bg);
+  --color-status-error-text: var(--status-error-text);
+  --color-status-error-light: var(--status-error-light);
+  --color-status-neutral-bg: var(--status-neutral-bg);
+  --color-status-neutral-text: var(--status-neutral-text);
 
-  /* Legacy status colors for compatibility */
-  --color-status-pending: #f3f4f6;
-  --color-status-success: #dcfce7;
-  --color-status-error: #fee2e2;
-  --color-status-neutral: #f3f4f6;
+  /* Legacy status colors */
+  --color-status-pending: var(--status-pending-bg);
+  --color-status-success: var(--status-success-bg);
+  --color-status-error: var(--status-error-bg);
+  --color-status-neutral: var(--status-neutral-bg);
 
   /* Focus Ring */
-  --color-ring: rgba(76, 234, 255, 0.5);
-  --color-ring-offset: #fff;
+  --color-ring: rgba(16, 185, 129, 0.5);
+  --color-ring-offset: var(--surface-bg);
 
   /* Typography Scale */
   --font-size-h1: 1.5rem;
@@ -83,6 +86,68 @@
   --transition-normal: 200ms ease-out;
 }
 
+/* Light theme (default) */
+:root {
+  --surface-bg: #ffffff;
+  --surface-panel: #fafafa;
+  --surface-dark: #1e293b;
+  --surface-medium: #e2e8f0;
+  --surface-muted: #f1f5f9;
+  --surface-card: #f8fafc;
+  --surface-card-hover: #f1f5f9;
+  --surface-light: #e5e7eb;
+
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-light: #f9fafb;
+  --text-muted: rgba(107, 114, 128, 0.7);
+
+  --border-light: #d1d5db;
+  --border-input: #e5e7eb;
+
+  --status-pending-bg: #f3f4f6;
+  --status-pending-text: #4b5563;
+  --status-success-bg: #dcfce7;
+  --status-success-text: #166534;
+  --status-success-light: rgba(220, 252, 231, 0.8);
+  --status-error-bg: #fee2e2;
+  --status-error-text: #991b1b;
+  --status-error-light: rgba(254, 226, 226, 0.8);
+  --status-neutral-bg: #f3f4f6;
+  --status-neutral-text: #4b5563;
+}
+
+/* Dark theme */
+.dark {
+  --surface-bg: #0A0A0A;
+  --surface-panel: #141414;
+  --surface-dark: #0F0F0F;
+  --surface-medium: #2a2a2a;
+  --surface-muted: #1a1a1a;
+  --surface-card: #141414;
+  --surface-card-hover: #1a1a1a;
+  --surface-light: #2a2a2a;
+
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --text-light: #FAFAFA;
+  --text-muted: rgba(250, 250, 250, 0.5);
+
+  --border-light: #2a2a2a;
+  --border-input: #2a2a2a;
+
+  --status-pending-bg: #27272a;
+  --status-pending-text: #a1a1aa;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+  --status-success-text: #10B981;
+  --status-success-light: rgba(16, 185, 129, 0.1);
+  --status-error-bg: rgba(239, 68, 68, 0.15);
+  --status-error-text: #f87171;
+  --status-error-light: rgba(239, 68, 68, 0.1);
+  --status-neutral-bg: #27272a;
+  --status-neutral-text: #a1a1aa;
+}
+
 /* Base Styles */
 body {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -93,7 +158,7 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Focus Visible - Global */
+/* Focus Visible */
 *:focus-visible {
   outline: 2px solid var(--color-brand-primary);
   outline-offset: 2px;
@@ -131,34 +196,18 @@ select:focus-visible {
 
 /* Animations */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {

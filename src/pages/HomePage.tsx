@@ -28,10 +28,12 @@ export function HomePage() {
   const initialMinDiff = Number(searchParams.get('minDiff')) || 1
   const initialMaxDiff = Number(searchParams.get('maxDiff')) || 5
   const initialSorts = parseSortsFromUrl(searchParams.get('sort'))
+  const initialTrialStatus = searchParams.get('status') || null
 
   const [keyword, setKeyword] = useState(initialKeyword)
   const [minDifficulty, setMinDifficulty] = useState(initialMinDiff)
   const [maxDifficulty, setMaxDifficulty] = useState(initialMaxDiff)
+  const [trialStatus, setTrialStatus] = useState<string | null>(initialTrialStatus)
   const [sorts, setSorts] = useState<SortItem[]>(initialSorts)
   const [page, setPage] = useState(initialPage)
   const [data, setData] = useState<PaginatedResponse<ProblemListItem> | null>(null)
@@ -45,10 +47,11 @@ export function HomePage() {
     if (page > 0) params.set('page', String(page))
     if (minDifficulty > 1) params.set('minDiff', String(minDifficulty))
     if (maxDifficulty < 5) params.set('maxDiff', String(maxDifficulty))
+    if (trialStatus) params.set('status', trialStatus)
     const defaultSort = sorts.length === 1 && sorts[0].field === 'id' && sorts[0].direction === 'asc'
     if (!defaultSort) params.set('sort', sortsToUrl(sorts))
     setSearchParams(params, { replace: true })
-  }, [debouncedKeyword, page, minDifficulty, maxDifficulty, sorts, setSearchParams])
+  }, [debouncedKeyword, page, minDifficulty, maxDifficulty, trialStatus, sorts, setSearchParams])
 
   useEffect(() => {
     updateUrl()
@@ -56,7 +59,7 @@ export function HomePage() {
 
   useEffect(() => {
     setPage(0)
-  }, [debouncedKeyword, minDifficulty, maxDifficulty, sorts])
+  }, [debouncedKeyword, minDifficulty, maxDifficulty, trialStatus, sorts])
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -69,6 +72,7 @@ export function HomePage() {
           keyword: debouncedKeyword || undefined,
           minDifficulty,
           maxDifficulty,
+          trialStatus: trialStatus || undefined,
           page,
           size: 14,
           sort: sortParams,
@@ -82,10 +86,10 @@ export function HomePage() {
     }
 
     fetchProblems()
-  }, [debouncedKeyword, minDifficulty, maxDifficulty, sorts, page])
+  }, [debouncedKeyword, minDifficulty, maxDifficulty, trialStatus, sorts, page])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-teal-50/30">
+    <div className="min-h-screen bg-surface-bg">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 max-w-3xl mx-auto">
           <SearchInput value={keyword} onChange={setKeyword} />
@@ -100,6 +104,8 @@ export function HomePage() {
                 setMinDifficulty(min)
                 setMaxDifficulty(max)
               }}
+              trialStatus={trialStatus}
+              onTrialStatusChange={setTrialStatus}
               sorts={sorts}
               onSortsChange={setSorts}
             />

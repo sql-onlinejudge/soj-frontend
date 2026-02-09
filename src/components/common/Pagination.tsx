@@ -52,7 +52,7 @@ export function Pagination({
       <button
         onClick={() => onPageChange(Math.max(0, currentPage - 1))}
         disabled={currentPage === 0}
-        className="w-10 h-10 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        className="w-10 h-10 flex items-center justify-center rounded border border-border-light text-text-secondary hover:bg-surface-muted hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         aria-label="이전 페이지"
       >
         ‹
@@ -60,7 +60,7 @@ export function Pagination({
 
       {getVisiblePages().map((page, index) =>
         typeof page === 'string' ? (
-          <span key={`ellipsis-${index}`} className="w-10 h-10 flex items-center justify-center text-gray-400" aria-hidden="true">
+          <span key={`ellipsis-${index}`} className="w-10 h-10 flex items-center justify-center text-text-muted" aria-hidden="true">
             …
           </span>
         ) : (
@@ -70,7 +70,7 @@ export function Pagination({
             className={`w-10 h-10 flex items-center justify-center rounded border text-sm transition-all ${
               currentPage === page
                 ? 'border-brand-primary bg-brand-primary text-white'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:shadow-sm'
+                : 'border-border-light text-text-secondary hover:bg-surface-muted hover:shadow-sm'
             }`}
             aria-label={`${page + 1} 페이지`}
             aria-current={currentPage === page ? 'page' : undefined}
@@ -83,7 +83,7 @@ export function Pagination({
       <button
         onClick={() => onPageChange(Math.min(totalPages - 1, currentPage + 1))}
         disabled={currentPage === totalPages - 1}
-        className="w-10 h-10 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-50 hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        className="w-10 h-10 flex items-center justify-center rounded border border-border-light text-text-secondary hover:bg-surface-muted hover:shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         aria-label="다음 페이지"
       >
         ›

@@ -11,10 +11,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-brand-primary text-surface-dark hover:bg-brand-primary-hover active:bg-brand-primary-hover active:shadow-inner',
+    'bg-brand-primary text-white hover:bg-brand-primary-hover active:bg-brand-primary-hover active:shadow-inner',
   secondary:
-    'bg-white border border-gray-300 text-text-primary hover:bg-gray-50 active:bg-gray-100 active:shadow-inner',
-  ghost: 'bg-transparent text-text-primary hover:bg-gray-100 active:bg-gray-200',
+    'bg-surface-panel border border-border-light text-text-primary hover:bg-surface-muted active:bg-surface-light active:shadow-inner',
+  ghost: 'bg-transparent text-text-primary hover:bg-surface-muted active:bg-surface-light',
 }
 
 const sizeStyles: Record<ButtonSize, string> = {

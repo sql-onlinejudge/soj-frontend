@@ -52,7 +52,7 @@ export function SubmissionHistory({
               aria-label={`제출 ${submission.id}번 상세 보기`}
               onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSubmissionClick(submission)}
             >
-              <td className="py-3 px-3 text-text-light">#{submission.id}</td>
+              <td className="py-3 px-3 text-text-primary">#{submission.id}</td>
               <td className="py-3 px-3">
                 <VerdictBadge status={submission.status} verdict={submission.verdict} />
               </td>
@@ -62,7 +62,7 @@ export function SubmissionHistory({
                     e.stopPropagation()
                     onProblemClick(submission.problemId)
                   }}
-                  className="text-text-light hover:text-brand-primary transition-colors"
+                  className="text-text-primary hover:text-brand-primary transition-colors"
                 >
                   #{submission.problemId}
                 </button>
@@ -77,7 +77,7 @@ export function SubmissionHistory({
                     onUserClick(submission.userId)
                   }}
                   title={submission.userId}
-                  className="text-text-light hover:text-brand-primary transition-colors truncate max-w-[120px] block"
+                  className="text-text-primary hover:text-brand-primary transition-colors truncate max-w-[120px] block"
                 >
                   {truncateUserId(submission.userId)}
                 </button>

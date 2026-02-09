@@ -2,11 +2,17 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="color-scheme" content="light" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-    <title>SOJ - SQL Online Judge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <title>Querify - SQL Online Judge</title>
+    <script>
+      (function(){var t=localStorage.getItem('theme');var d=t!=='light';if(d)document.documentElement.classList.add('dark');document.querySelector('meta[name="color-scheme"]').setAttribute('content',d?'dark':'light')})();
+    </script>
   </head>
   <body>
     <div id="root"></div>

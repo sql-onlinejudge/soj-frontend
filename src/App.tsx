@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { Header } from './components/common/Header'
@@ -6,13 +6,19 @@ import { ComingSoonModal } from './components/common/ComingSoonModal'
 import { HomePage } from './pages/HomePage'
 import { ProblemPage } from './pages/ProblemPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { useUIStore, applyTheme } from './stores/uiStore'
 
 function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const themePreference = useUIStore((s) => s.themePreference)
+
+  useEffect(() => {
+    applyTheme(themePreference)
+  }, [themePreference])
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-surface-bg transition-colors">
         <Header onLoginClick={() => setIsLoginModalOpen(true)} />
         <Routes>
           <Route path="/" element={<HomePage />} />

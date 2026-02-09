@@ -21,7 +21,7 @@ function InitDataTable({ initMetadata }: { initMetadata: InitMetadata }) {
             <div className="overflow-x-auto">
               <table className="w-full border border-border-light text-sm">
                 <thead>
-                  <tr className="bg-teal-50">
+                  <tr className="bg-brand-primary/10">
                     {columns.map(col => (
                       <th key={col} className="border border-border-light px-3 py-2 text-left font-semibold">{col}</th>
                     ))}
@@ -29,7 +29,7 @@ function InitDataTable({ initMetadata }: { initMetadata: InitMetadata }) {
                 </thead>
                 <tbody>
                   {stmt.rows.map((row, rowIdx) => (
-                    <tr key={rowIdx} className="bg-white">
+                    <tr key={rowIdx} className="bg-surface-panel">
                       {columns.map(col => (
                         <td key={col} className="border border-border-light px-3 py-2">
                           {row[col] != null ? String(row[col]) : 'NULL'}
@@ -52,7 +52,7 @@ function AnswerTable({ answerMetadata }: { answerMetadata: AnswerMetadata }) {
     <div className="overflow-x-auto">
       <table className="w-full border border-border-light text-sm">
         <thead>
-          <tr className="bg-teal-50">
+          <tr className="bg-brand-primary/10">
             {answerMetadata.columns.map(col => (
               <th key={col} className="border border-border-light px-3 py-2 text-left font-semibold">{col}</th>
             ))}
@@ -60,7 +60,7 @@ function AnswerTable({ answerMetadata }: { answerMetadata: AnswerMetadata }) {
         </thead>
         <tbody>
           {answerMetadata.rows.map((row, i) => (
-            <tr key={i} className="bg-white">
+            <tr key={i} className="bg-surface-panel">
               {row.map((cell, j) => (
                 <td key={j} className="border border-border-light px-3 py-2">
                   {cell != null ? String(cell) : 'NULL'}
@@ -80,7 +80,7 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: Colum
       <p className="text-sm font-medium text-text-primary mb-2">{tableName}</p>
       <table className="w-full border border-border-light rounded text-sm">
         <thead>
-          <tr className="bg-teal-50">
+          <tr className="bg-brand-primary/10">
             <th className="border border-border-light px-3 py-2 text-left font-semibold">Column</th>
             <th className="border border-border-light px-3 py-2 text-left font-semibold">Type</th>
             <th className="border border-border-light px-3 py-2 text-left font-semibold">Nullable</th>
@@ -89,7 +89,7 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: Colum
         </thead>
         <tbody>
           {columns.map((col, idx) => (
-            <tr key={idx} className="bg-white">
+            <tr key={idx} className="bg-surface-panel">
               <td className="border border-border-light px-3 py-2">{col.name}</td>
               <td className="border border-border-light px-3 py-2">{col.type}</td>
               <td className="border border-border-light px-3 py-2">{(col.nullable ?? true) ? 'Yes' : 'No'}</td>
@@ -128,7 +128,7 @@ function TestcaseTable({ testcase, index }: { testcase: Testcase; index: number 
 
 export function ProblemDescription({ problem, testcases }: ProblemDescriptionProps) {
   return (
-    <div className="bg-white h-full overflow-auto">
+    <div className="bg-surface-panel h-full overflow-auto">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-2 flex-wrap">
           <h1 className="text-xl font-medium text-text-primary">
@@ -156,8 +156,8 @@ export function ProblemDescription({ problem, testcases }: ProblemDescriptionPro
               <SchemaTable key={idx} tableName={table.name} columns={table.columns} />
             ))
           ) : (
-            <div className="bg-white border border-border-light rounded p-4 overflow-x-auto">
-              <pre className="text-sm font-mono text-black whitespace-pre-wrap">
+            <div className="bg-surface-panel border border-border-light rounded p-4 overflow-x-auto">
+              <pre className="text-sm font-mono text-text-primary whitespace-pre-wrap">
                 {problem.schemaSql}
               </pre>
             </div>

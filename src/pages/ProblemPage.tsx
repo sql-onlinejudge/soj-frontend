@@ -212,7 +212,7 @@ export function ProblemPage() {
   if (!problem) {
     return (
       <div className="h-[calc(100vh-3.5rem)] flex items-center justify-center">
-        <p className="text-gray-500">로딩 중...</p>
+        <p className="text-text-secondary">로딩 중...</p>
       </div>
     )
   }
@@ -222,8 +222,8 @@ export function ProblemPage() {
       <div className="h-[calc(100vh-3.5rem)] hidden lg:block">
         <Allotment>
           <Allotment.Pane preferredSize={570} minSize={300} maxSize={1000}>
-            <div className="h-full flex flex-col overflow-hidden bg-white">
-              <div className="p-4 border-b border-gray-200">
+            <div className="h-full flex flex-col overflow-hidden bg-surface-panel">
+              <div className="p-4 border-b border-border-input">
                 <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
                   <span className="mr-1">←</span> 목록으로
                 </Button>
@@ -241,6 +241,7 @@ export function ProblemPage() {
                   value={code}
                   onChange={setCode}
                   onSubmit={handleSubmit}
+                  onRun={() => setIsComingSoonModalOpen(true)}
                   isSubmitting={isSubmitting}
                 />
               </Allotment.Pane>
@@ -285,7 +286,7 @@ export function ProblemPage() {
       </div>
 
       <div className="lg:hidden min-h-[calc(100vh-3.5rem)] flex flex-col">
-        <div className="p-4 border-b border-gray-200 bg-white">
+        <div className="p-4 border-b border-border-input bg-surface-panel">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             <span className="mr-1">←</span> 목록으로
           </Button>
@@ -298,6 +299,7 @@ export function ProblemPage() {
             value={code}
             onChange={setCode}
             onSubmit={handleSubmit}
+            onRun={() => setIsComingSoonModalOpen(true)}
             isSubmitting={isSubmitting}
           />
         </div>

@@ -7,42 +7,14 @@ interface VerdictBadgeProps {
 
 type VerdictType = Verdict | 'PENDING' | 'RUNNING'
 
-const verdictStyles: Record<VerdictType, { bg: string; text: string; label: string }> = {
-  PENDING: {
-    bg: 'bg-status-pending-bg',
-    text: 'text-status-pending-text',
-    label: '대기 중...',
-  },
-  RUNNING: {
-    bg: 'bg-status-pending-bg',
-    text: 'text-status-pending-text',
-    label: '채점 중...',
-  },
-  ACCEPTED: {
-    bg: 'bg-status-success-bg',
-    text: 'text-status-success-text',
-    label: '정답',
-  },
-  WRONG_ANSWER: {
-    bg: 'bg-status-error-bg',
-    text: 'text-status-error-text',
-    label: '오답',
-  },
-  TIME_LIMIT_EXCEEDED: {
-    bg: 'bg-status-error-bg',
-    text: 'text-status-error-text',
-    label: '시간 초과',
-  },
-  RUNTIME_ERROR: {
-    bg: 'bg-status-error-bg',
-    text: 'text-status-error-text',
-    label: '런타임 에러',
-  },
-  INVALID_QUERY: {
-    bg: 'bg-status-error-bg',
-    text: 'text-status-error-text',
-    label: '잘못된 쿼리',
-  },
+const verdictStyles: Record<VerdictType, { bg: string; color: string; label: string }> = {
+  PENDING: { bg: '#4B556330', color: '#6B7280', label: '대기 중...' },
+  RUNNING: { bg: '#F59E0B30', color: '#F59E0B', label: '채점 중...' },
+  ACCEPTED: { bg: '#10B98130', color: '#10B981', label: '정답' },
+  WRONG_ANSWER: { bg: '#EF444430', color: '#EF4444', label: '오답' },
+  TIME_LIMIT_EXCEEDED: { bg: '#EF444430', color: '#EF4444', label: '시간 초과' },
+  RUNTIME_ERROR: { bg: '#EF444430', color: '#EF4444', label: '런타임 에러' },
+  INVALID_QUERY: { bg: '#EF444430', color: '#EF4444', label: '잘못된 쿼리' },
 }
 
 export function VerdictBadge({ status, verdict }: VerdictBadgeProps) {
@@ -61,7 +33,8 @@ export function VerdictBadge({ status, verdict }: VerdictBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center justify-center px-3 py-1 rounded-md text-sm font-medium whitespace-nowrap ${style.bg} ${style.text}`}
+      className="inline-flex items-center justify-center px-3 py-1 rounded-md text-sm font-medium whitespace-nowrap"
+      style={{ backgroundColor: style.bg, color: style.color }}
     >
       {style.label}
     </span>

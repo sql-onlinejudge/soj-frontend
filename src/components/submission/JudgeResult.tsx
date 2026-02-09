@@ -19,12 +19,12 @@ export function JudgeResult({ status, verdict, query }: JudgeResultProps) {
   return (
     <div className="p-5 space-y-4">
       <div>
-        <p className="text-sm text-white mb-2">결과</p>
+        <p className="text-sm text-text-secondary mb-2">결과</p>
         <VerdictBadge status={status} verdict={verdict} />
       </div>
 
       <div>
-        <p className="text-sm text-white mb-2">제출한 쿼리</p>
+        <p className="text-sm text-text-secondary mb-2">제출한 쿼리</p>
         <div className="bg-surface-dark rounded p-4 overflow-x-auto max-w-full">
           <pre className="text-base font-mono whitespace-pre-wrap break-words">
             <span className="text-accent-pink">SELECT </span>

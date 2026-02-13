@@ -1,7 +1,7 @@
 import type { TrialStatus } from '../../types'
 
 interface StatusBadgeProps {
-  status: TrialStatus
+  status: TrialStatus | null
 }
 
 const statusStyles: Record<TrialStatus, { bg: string; color: string; label: string }> = {
@@ -11,6 +11,7 @@ const statusStyles: Record<TrialStatus, { bg: string; color: string; label: stri
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
+  if (!status) return null
   const style = statusStyles[status]
 
   return (

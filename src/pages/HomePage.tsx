@@ -1,28 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { getProblems } from '../services/api'
-import type { ProblemListItem } from '../types'
+import { getProblems, getWorkbooks } from '../services/api'
+import type { ProblemListItem, Workbook } from '../types'
 import { DifficultyBadge } from '../components/badges/DifficultyBadge'
 import { ProblemList } from '../components/problem/ProblemList'
-import { ComingSoonModal } from '../components/common/ComingSoonModal'
-
-const WORKBOOKS = [
-  { title: 'SQL 입문', desc: 'SELECT, WHERE, ORDER BY 기초 문법을 익혀보세요.', level: 1, count: 10 },
-  { title: 'JOIN 마스터', desc: 'INNER, LEFT, RIGHT, CROSS JOIN을 실전으로 연습합니다.', level: 2, count: 8 },
-  { title: '서브쿼리 정복', desc: '스칼라, 인라인 뷰, 상관 서브쿼리를 단계별로 학습하세요.', level: 3, count: 8 },
-  { title: '윈도우 함수', desc: 'ROW_NUMBER, RANK, LEAD/LAG 등 분석 함수 모음.', level: 4, count: 6 },
-  { title: '실전 최적화', desc: '인덱스, 실행 계획, 쿼리 튜닝 고급 과정입니다.', level: 5, count: 5 },
-]
 
 type SortMode = 'latest' | 'popular'
 
 export function HomePage() {
   const navigate = useNavigate()
   const [problems, setProblems] = useState<ProblemListItem[]>([])
+  const [workbooks, setWorkbooks] = useState<Workbook[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [sortMode, setSortMode] = useState<SortMode>('latest')
   const [keyword, setKeyword] = useState('')
-  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -39,6 +30,12 @@ export function HomePage() {
     }
     fetchProblems()
   }, [sortMode])
+
+  useEffect(() => {
+    getWorkbooks({ size: 5 })
+      .then((res) => setWorkbooks(res.content))
+      .catch(() => console.error('Failed to fetch workbooks'))
+  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -126,33 +123,36 @@ export function HomePage() {
         <aside className="w-[380px] shrink-0 hidden lg:flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-text-primary">문제집</h2>
-            <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1 text-[13px] text-text-muted hover:text-text-secondary transition-colors">
+            <Link to="/workbooks" className="flex items-center gap-1 text-[13px] text-text-muted hover:text-text-secondary transition-colors">
               더보기
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </button>
+            </Link>
           </div>
           <div className="flex flex-col gap-2">
-            {WORKBOOKS.map((wb) => (
-              <button
-                key={wb.title}
-                onClick={() => setIsModalOpen(true)}
-                className="text-left p-4 px-5 rounded-lg bg-surface-panel border border-border-input hover:bg-surface-muted transition-colors flex flex-col gap-2"
-              >
-                <span className="text-sm font-semibold text-text-primary">{wb.title}</span>
-                <span className="text-xs text-text-secondary leading-relaxed">{wb.desc}</span>
-                <div className="flex items-center gap-3">
-                  <DifficultyBadge level={wb.level} />
-                  <span className="text-[11px] text-text-muted">{wb.count}문제</span>
-                </div>
-              </button>
-            ))}
+            {workbooks.length === 0 ? (
+              <div className="p-4 rounded-lg bg-surface-panel border border-border-input text-center text-sm text-text-secondary">
+                문제집이 없습니다.
+              </div>
+            ) : (
+              workbooks.map((wb) => (
+                <Link
+                  key={wb.id}
+                  to={`/workbooks/${wb.id}`}
+                  className="text-left p-4 px-5 rounded-lg bg-surface-panel border border-border-input hover:bg-surface-muted transition-colors flex flex-col gap-2"
+                >
+                  <span className="text-sm font-semibold text-text-primary">{wb.name}</span>
+                  <span className="text-xs text-text-secondary leading-relaxed">{wb.description}</span>
+                  <div className="flex items-center gap-3">
+                    <DifficultyBadge level={wb.difficulty} />
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
         </aside>
       </div>
-
-      <ComingSoonModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   )
 }

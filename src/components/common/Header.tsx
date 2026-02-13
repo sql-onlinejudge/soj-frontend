@@ -1,19 +1,31 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useUIStore } from '../../stores/uiStore'
+import { useAuthStore } from '../../stores/authStore'
+import { logout as logoutApi } from '../../services/api/auth'
+import { LoginModal } from './LoginModal'
 
-interface HeaderProps {
-  onLoginClick: () => void
-}
-
-export function Header({ onLoginClick }: HeaderProps) {
+export function Header() {
   const themePreference = useUIStore((s) => s.themePreference)
   const setThemePreference = useUIStore((s) => s.setThemePreference)
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
+  const logout = useAuthStore((s) => s.logout)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const toggleTheme = () => {
     setThemePreference(themePreference === 'dark' ? 'light' : 'dark')
   }
 
+  const handleLogout = async () => {
+    try {
+      await logoutApi()
+    } finally {
+      logout()
+    }
+  }
+
   return (
+    <>
     <header className="bg-surface-bg/80 backdrop-blur-sm border-b border-border-input h-14 w-full sticky top-0 z-50 transition-colors">
       <div className="px-10 h-full flex items-center justify-between">
         <Link to="/" aria-label="Querify 홈으로" className="flex items-center gap-1.5">
@@ -46,22 +58,28 @@ export function Header({ onLoginClick }: HeaderProps) {
               )}
             </span>
           </button>
-          <button
-            onClick={onLoginClick}
-            className="text-[13px] text-text-secondary hover:text-text-primary transition-colors"
-            style={{ fontFamily: 'JetBrains Mono' }}
-          >
-            로그인
-          </button>
-          <button
-            onClick={onLoginClick}
-            className="text-[13px] font-medium bg-brand-primary text-surface-bg rounded px-4 py-2 hover:bg-brand-primary-hover transition-colors"
-            style={{ fontFamily: 'JetBrains Mono' }}
-          >
-            회원가입
-          </button>
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="text-[13px] text-text-secondary hover:text-text-primary transition-colors"
+              style={{ fontFamily: 'JetBrains Mono' }}
+            >
+              로그아웃
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsLoginModalOpen(true)}
+              className="text-[13px] font-medium bg-brand-primary text-surface-bg rounded px-4 py-2 hover:bg-brand-primary-hover transition-colors"
+              style={{ fontFamily: 'JetBrains Mono' }}
+            >
+              로그인
+            </button>
+          )}
         </div>
       </div>
+
     </header>
+    <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+    </>
   )
 }

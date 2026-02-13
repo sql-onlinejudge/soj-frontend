@@ -1,3 +1,4 @@
+export { useAuthStore } from './authStore'
 export { useProblemStore } from './problemStore'
 export { useEditorStore } from './editorStore'
 export { useSubmissionStore } from './submissionStore'

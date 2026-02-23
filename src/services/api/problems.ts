@@ -37,6 +37,9 @@ export async function getProblem(problemId: number): Promise<ProblemDetail> {
   return fetchApi<ProblemDetail>(`/problems/${problemId}`)
 }
 
-export async function getTestcases(problemId: number): Promise<Testcase[]> {
-  return fetchApi<Testcase[]>(`/problems/${problemId}/testcases`)
+export async function getTestcases(problemId: number, isVisible?: boolean): Promise<Testcase[]> {
+  const params = new URLSearchParams()
+  if (isVisible !== undefined) params.set('isVisible', String(isVisible))
+  const query = params.toString()
+  return fetchApi<Testcase[]>(`/problems/${problemId}/testcases${query ? `?${query}` : ''}`)
 }

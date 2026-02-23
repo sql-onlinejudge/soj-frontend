@@ -10,6 +10,9 @@ import {
   getSubmissions,
   getSubmission,
   subscribeToSubmission,
+  createRun,
+  subscribeToRun,
+  getRun,
 } from '../services/api'
 import { useUserId } from '../hooks/useUserId'
 import { useSubmissionStore } from '../stores/submissionStore'
@@ -20,6 +23,7 @@ import type {
   SubmissionDetail,
   SubmissionStatus,
   Verdict,
+  RunResult,
 } from '../types'
 import { ProblemDescription } from '../components/problem/ProblemDescription'
 import { CodeEditor } from '../components/problem/CodeEditor'
@@ -52,6 +56,9 @@ export function ProblemPage() {
   const [isLoadingSubmissions, setIsLoadingSubmissions] = useState(false)
   const [currentSubmissionId, setCurrentSubmissionId] = useState<number | undefined>()
 
+  const [runResult, setRunResult] = useState<RunResult | null>(null)
+  const [isRunning, setIsRunning] = useState(false)
+
   const [selectedSubmission, setSelectedSubmission] = useState<SubmissionDetail | null>(null)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false)
@@ -64,7 +71,7 @@ export function ProblemPage() {
       try {
         const [problemData, testcasesData] = await Promise.all([
           getProblem(Number(problemId)),
-          getTestcases(Number(problemId)),
+          getTestcases(Number(problemId), true),
         ])
         setProblem(problemData)
         setTestcases(testcasesData)
@@ -187,6 +194,44 @@ export function ProblemPage() {
     }
   }
 
+  const handleRun = async () => {
+    if (!problemId || !code.trim()) return
+
+    setIsRunning(true)
+    setRunResult({ runId: 0, status: 'IN_PROGRESS', results: null })
+    setActiveTab('execution')
+
+    try {
+      const { runId } = await createRun(Number(problemId), code)
+
+      const unsubscribe = subscribeToRun(
+        Number(problemId),
+        runId,
+        (data) => {
+          setRunResult(data)
+          if (data.status === 'COMPLETED' || data.status === 'FAILED') {
+            setIsRunning(false)
+            unsubscribe()
+          }
+        },
+        async () => {
+          try {
+            const data = await getRun(Number(problemId), runId)
+            setRunResult(data)
+          } catch {
+            /* empty */
+          } finally {
+            setIsRunning(false)
+          }
+        }
+      )
+    } catch {
+      toast.error('실행에 실패했습니다.')
+      setRunResult(null)
+      setIsRunning(false)
+    }
+  }
+
   const handleSubmissionClick = async (submission: SubmissionListItem) => {
     try {
       const detail = await getSubmission(submission.problemId, submission.id)
@@ -241,8 +286,9 @@ export function ProblemPage() {
                   value={code}
                   onChange={setCode}
                   onSubmit={handleSubmit}
-                  onRun={() => setIsComingSoonModalOpen(true)}
+                  onRun={handleRun}
                   isSubmitting={isSubmitting}
+                  isRunning={isRunning}
                 />
               </Allotment.Pane>
 
@@ -253,7 +299,7 @@ export function ProblemPage() {
                 >
                   {(tab) => {
                     if (tab === 'execution') {
-                      return <ExecutionResult result={null} />
+                      return <ExecutionResult result={runResult} />
                     }
                     if (tab === 'judge') {
                       return (
@@ -299,8 +345,9 @@ export function ProblemPage() {
             value={code}
             onChange={setCode}
             onSubmit={handleSubmit}
-            onRun={() => setIsComingSoonModalOpen(true)}
+            onRun={handleRun}
             isSubmitting={isSubmitting}
+            isRunning={isRunning}
           />
         </div>
         <div className="flex-1 min-h-[300px]">
@@ -310,7 +357,7 @@ export function ProblemPage() {
           >
             {(tab) => {
               if (tab === 'execution') {
-                return <ExecutionResult result={null} />
+                return <ExecutionResult result={runResult} />
               }
               if (tab === 'judge') {
                 return (

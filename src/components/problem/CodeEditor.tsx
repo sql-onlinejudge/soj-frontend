@@ -7,6 +7,7 @@ interface CodeEditorProps {
   onSubmit: () => void
   onRun: () => void
   isSubmitting?: boolean
+  isRunning?: boolean
 }
 
 export function CodeEditor({
@@ -15,6 +16,7 @@ export function CodeEditor({
   onSubmit,
   onRun,
   isSubmitting,
+  isRunning,
 }: CodeEditorProps) {
   const themePreference = useUIStore((s) => s.themePreference)
   const isDark = themePreference === 'dark'
@@ -40,13 +42,14 @@ export function CodeEditor({
         <div className="flex items-center gap-2">
           <button
             onClick={onRun}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium bg-surface-dark text-text-light transition-colors"
+            disabled={isRunning || !value.trim()}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium bg-surface-dark text-text-light transition-colors disabled:opacity-50 disabled:pointer-events-none"
             style={{ fontFamily: 'JetBrains Mono' }}
           >
             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M8 5v14l11-7z" />
             </svg>
-            실행
+            {isRunning ? '실행 중...' : '실행'}
           </button>
           <button
             onClick={onSubmit}

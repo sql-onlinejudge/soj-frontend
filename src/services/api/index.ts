@@ -1,5 +1,6 @@
 export * from './auth'
 export * from './client'
 export * from './problems'
+export * from './runs'
 export * from './submissions'
 export * from './workbooks'

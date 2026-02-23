@@ -1,4 +1,5 @@
 export * from './problem'
 export * from './submission'
+export * from './run'
 export * from './workbook'
 export * from './common'

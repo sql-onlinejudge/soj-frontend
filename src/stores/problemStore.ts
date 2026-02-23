@@ -22,7 +22,7 @@ export const useProblemStore = create<ProblemState>((set) => ({
     try {
       const [problem, testcases] = await Promise.all([
         getProblem(problemId),
-        getTestcases(problemId),
+        getTestcases(problemId, true),
       ])
       set({ problem, testcases, isLoading: false })
     } catch (error) {

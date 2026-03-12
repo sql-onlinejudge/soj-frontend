@@ -20,19 +20,26 @@ jobs:
           COMMIT_MSG: ${{ github.event.client_payload.commit_message }}
         run: node scripts/sync-backend.mjs
 
+      - name: Save commit msg
+        run: echo "COMMIT_MSG=${{ github.event.client_payload.commit_message }}" >> $GITHUB_ENV
+
       - name: Create PR
         id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
           branch: ai/update-api-${{ github.run_number }}
-          title: "${{ github.event.inputs.commit_message }}"
-          body: "백엔드 변경에 따른 프론트엔드 자동 업데이트"
+          title: "AI: 백엔드 API 변경 반영"
+          body: |
+            백엔드 변경에 따른 프론트엔드 자동 업데이트
+            
+            **커밋:** ${{ env.COMMIT_MSG }}
+          commit-message: "feat: backend API 변경 반영"
             
       - name: Save PR URL
         if: ${{ steps.cpr.outputs.pull-request-url }}
         run: echo "PR_URL=${{ steps.cpr.outputs.pull-request-url }}" >> $GITHUB_ENV
             
-      - name: Notify Discord
+      - name: Notify Discords
         if: ${{ env.PR_URL != '' }}
         run: |
           curl -H "Content-Type: application/json" \

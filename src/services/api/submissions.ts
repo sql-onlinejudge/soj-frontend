@@ -1,5 +1,5 @@
 import { fetchApi, createEventSource } from './client'
-import type { PaginatedResponse, SubmissionDetail, SubmissionListItem } from '../../types'
+import type { PaginatedResponse, SubmissionDetail, SubmissionListItem, SubmitResponse } from '../../types'
 
 export interface GetSubmissionsParams {
   userId?: string
@@ -12,8 +12,8 @@ export interface GetSubmissionsParams {
 export async function createSubmission(
   problemId: number,
   query: string
-): Promise<{ submissionId: number }> {
-  return fetchApi<{ submissionId: number }>(`/problems/${problemId}/submissions`, {
+): Promise<SubmitResponse> {
+  return fetchApi<SubmitResponse>(`/problems/${problemId}/submissions`, {
     method: 'POST',
     body: JSON.stringify({ query }),
   })

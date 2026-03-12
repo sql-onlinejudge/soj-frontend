@@ -30,3 +30,8 @@ export interface PendingSubmission {
   problemId: number
   problemTitle: string
 }
+
+export interface SubmitResponse {
+  submissionId: number
+  score: number | null
+}

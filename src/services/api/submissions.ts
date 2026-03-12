@@ -12,8 +12,8 @@ export interface GetSubmissionsParams {
 export async function createSubmission(
   problemId: number,
   query: string
-): Promise<{ submissionId: number; name: string | null }> {
-  return fetchApi<{ submissionId: number; name: string | null }>(`/problems/${problemId}/submissions`, {
+): Promise<{ submissionId: number; score: string | null }> {
+  return fetchApi<{ submissionId: number; score: string | null }>(`/problems/${problemId}/submissions`, {
     method: 'POST',
     body: JSON.stringify({ query }),
   })

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { getProblems, getWorkbooks } from '../services/api'
+import { getProblems, getWorkbooks, getStats } from '../services/api'
 import type { ProblemListItem, Workbook } from '../types'
 import { DifficultyBadge } from '../components/badges/DifficultyBadge'
 import { ProblemList } from '../components/problem/ProblemList'
@@ -14,6 +14,13 @@ export function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [sortMode, setSortMode] = useState<SortMode>('latest')
   const [keyword, setKeyword] = useState('')
+  const [stats, setStats] = useState({ problems: 0, submissions: 0, users: 0 })
+
+  useEffect(() => {
+    getStats()
+      .then((data) => setStats(data))
+      .catch(() => console.error('Failed to fetch stats'))
+  }, [])
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -57,12 +64,12 @@ export function HomePage() {
           </div>
           <div className="flex items-center gap-8">
             {[
-              { value: '000', label: '문제' },
-              { value: '000', label: '제출' },
-              { value: '000', label: '사용자' },
+              { value: stats.problems, label: '문제' },
+              { value: stats.submissions, label: '제출' },
+              { value: stats.users, label: '사용자' },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col items-center gap-1">
-                <span className="text-[22px] font-bold text-brand-primary" style={{ fontFamily: 'JetBrains Mono' }}>{stat.value}</span>
+                <span className="text-[22px] font-bold text-brand-primary" style={{ fontFamily: 'JetBrains Mono' }}>{stat.value.toLocaleString()}</span>
                 <span className="text-xs text-text-muted">{stat.label}</span>
               </div>
             ))}

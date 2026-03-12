@@ -1,3 +1,19 @@
+function findMatchingBrace(text, startIndex) {
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (let i = startIndex; i < text.length; i++) {
+    const ch = text[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\' && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') depth++;
+    if (ch === '}') { depth--; if (depth === 0) return i; }
+  }
+  return -1;
+}
+
 import fs from 'fs';
 import path from 'path';
 
@@ -28,7 +44,7 @@ try {
 
   console.log('Total content length:', fileContents.length);
   console.log('Calling Claude API...');
-
+    
   const prompt = `당신은 시니어 프론트엔드 개발자입니다.
 백엔드 API가 변경되었습니다. 아래 diff를 분석하고 프론트엔드 코드를 수정하세요.
 
@@ -89,8 +105,10 @@ API 변경이 없으면:
   console.log('Response preview:', text.substring(0, 300));
 
   text = text.replace(/```json\s*/g, '').replace(/```/g, '');
-  const result = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1));
-
+  const start = text.indexOf('{');
+  const end = findMatchingBrace(text, start);
+  const result = JSON.parse(text.substring(start, end + 1));
+    
   console.log('Files to update:', result.files.length);
 
   if (result.files.length === 0) {

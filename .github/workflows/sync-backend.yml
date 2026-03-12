@@ -15,7 +15,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BACKEND_DIFF: ${{ github.event.client_payload.diff }}
           COMMIT_MSG: ${{ github.event.client_payload.commit_message }}
-        run: node scripts/sync-frontend.mjs
+        run: node scripts/sync-backend.mjs
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v5

@@ -119,7 +119,8 @@ export function ProblemPage() {
     setActiveTab('judge')
 
     try {
-      const { submissionId } = await createSubmission(Number(problemId), code)
+      const response = await createSubmission(Number(problemId), code)
+      const submissionId = response.submissionId
       if (!submissionId) {
         throw new Error('submissionId not found in response')
       }

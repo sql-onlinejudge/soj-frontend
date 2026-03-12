@@ -16,7 +16,7 @@ jobs:
           BACKEND_DIFF: ${{ github.event.client_payload.diff }}
           COMMIT_MSG: ${{ github.event.client_payload.commit_message }}
         run: |
-          node << 'EOF'
+          node --input-type=commonjs << 'EOF'
           const fs = require('fs');
           const path = require('path');
 

@@ -139,7 +139,8 @@ export function ProblemDescription({ problem, testcases }: ProblemDescriptionPro
         </div>
         <p className="text-base text-text-secondary mb-6">
           제출 수: {formatNumber(problem.submissionCount)} &nbsp;&nbsp; 정답 수:{' '}
-          {formatNumber(problem.solvedCount)}
+          {formatNumber(problem.solvedCount)} &nbsp;&nbsp; 정답률:{' '}
+          {problem.acceptanceRate.toFixed(1)}%
         </p>
 
         <section className="mb-6">

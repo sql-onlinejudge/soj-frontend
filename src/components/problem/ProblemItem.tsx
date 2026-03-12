@@ -25,7 +25,7 @@ export function ProblemItem({ problem }: ProblemItemProps) {
       </div>
       <div className="flex items-center gap-4">
         <span className="text-xs text-text-secondary whitespace-nowrap hidden sm:inline">
-          제출 {formatNumber(problem.submissionCount)} · 정답 {formatNumber(problem.solvedCount)}
+          제출 {formatNumber(problem.submissionCount)} · 정답 {formatNumber(problem.solvedCount)} · 정답률 {problem.acceptanceRate.toFixed(1)}%
         </span>
         <StatusBadge status={problem.trialStatus} />
       </div>

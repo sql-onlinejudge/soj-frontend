@@ -25,7 +25,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           branch: ai/update-api-${{ github.run_number }}
-          title: "feat: ${{ github.event.inputs.commit_message }}"
+          title: "${{ github.event.inputs.commit_message }}"
           body: "백엔드 변경에 따른 프론트엔드 자동 업데이트"
             
       - name: Save PR URL

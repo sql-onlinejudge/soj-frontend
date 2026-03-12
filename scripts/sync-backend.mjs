@@ -14,6 +14,11 @@ function getFiles(dir) {
   return results;
 }
 
+const files = getFiles('src');
+const fileContents = files.map(f =>
+  `--- ${f} ---\n${fs.readFileSync(f, 'utf-8')}`
+).join('\n\n');
+    
 const prompt = `당신은 프론트엔드 개발자입니다.
 백엔드 API가 변경되었습니다. 아래 diff를 분석하고 프론트엔드 코드를 수정하세요.
 
@@ -44,11 +49,6 @@ ${fileContents}
 
 API 변경이 없으면:
 {"files": []}`;
-
-const files = getFiles('src');
-const fileContents = files.map(f =>
-  `--- ${f} ---\n${fs.readFileSync(f, 'utf-8')}`
-).join('\n\n');
 
 const res = await fetch('https://api.anthropic.com/v1/messages', {
   method: 'POST',

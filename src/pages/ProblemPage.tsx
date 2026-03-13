@@ -391,7 +391,6 @@ export function ProblemPage() {
         onClose={() => setIsDetailModalOpen(false)}
         submission={selectedSubmission}
         onProblemClick={handleProblemClick}
-        onUserClick={handleUserClick}
       />
 
       <ComingSoonModal

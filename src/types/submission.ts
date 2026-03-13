@@ -13,7 +13,6 @@ export interface SubmissionListItem {
 export interface SubmissionDetail {
   id: number
   problemId: number
-  userId: string
   status: SubmissionStatus
   verdict: Verdict | null
   query: string

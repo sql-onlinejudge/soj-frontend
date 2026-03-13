@@ -269,7 +269,7 @@ export function ProblemPage() {
           <Allotment.Pane preferredSize={570} minSize={300} maxSize={1000}>
             <div className="h-full flex flex-col overflow-hidden bg-surface-panel">
               <div className="p-4 border-b border-border-input">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/problems')}>
                   <span className="mr-1">←</span> 목록으로
                 </Button>
               </div>
@@ -333,7 +333,7 @@ export function ProblemPage() {
 
       <div className="lg:hidden min-h-[calc(100vh-3.5rem)] flex flex-col">
         <div className="p-4 border-b border-border-input bg-surface-panel">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/problems')}>
             <span className="mr-1">←</span> 목록으로
           </Button>
         </div>

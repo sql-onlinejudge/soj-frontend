@@ -2,7 +2,6 @@ import { fetchApi, createEventSource } from './client'
 import type { PaginatedResponse, SubmissionDetail, SubmissionListItem } from '../../types'
 
 export interface GetSubmissionsParams {
-  userId?: string
   status?: string
   verdict?: string
   page?: number
@@ -24,7 +23,6 @@ export async function getSubmissions(
   params: GetSubmissionsParams = {}
 ): Promise<PaginatedResponse<SubmissionListItem>> {
   const searchParams = new URLSearchParams()
-  if (params.userId) searchParams.set('userId', params.userId)
   if (params.status) searchParams.set('status', params.status)
   if (params.verdict) searchParams.set('verdict', params.verdict)
   if (params.page !== undefined) searchParams.set('page', String(params.page))

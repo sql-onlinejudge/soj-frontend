@@ -14,7 +14,6 @@ import {
   subscribeToRun,
   getRun,
 } from '../services/api'
-import { useUserId } from '../hooks/useUserId'
 import { useSubmissionStore } from '../stores/submissionStore'
 import type {
   ProblemDetail,
@@ -39,7 +38,6 @@ import { NotFoundPage } from './NotFoundPage'
 export function ProblemPage() {
   const { problemId } = useParams<{ problemId: string }>()
   const navigate = useNavigate()
-  const userId = useUserId()
   const { subscribeSubmission } = useSubmissionStore()
 
   const [problem, setProblem] = useState<ProblemDetail | null>(null)
@@ -92,7 +90,6 @@ export function ProblemPage() {
     setIsLoadingSubmissions(true)
     try {
       const response = await getSubmissions(Number(problemId), {
-        userId,
         size: 50,
       })
       setSubmissions(response.content)
@@ -101,7 +98,7 @@ export function ProblemPage() {
     } finally {
       setIsLoadingSubmissions(false)
     }
-  }, [problemId, userId])
+  }, [problemId])
 
   useEffect(() => {
     if (activeTab === 'history') {

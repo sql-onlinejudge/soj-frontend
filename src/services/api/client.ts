@@ -1,4 +1,3 @@
-import { getUserId } from '../../hooks/useUserId'
 import { useAuthStore } from '../../stores/authStore'
 
 export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
@@ -18,13 +17,11 @@ export async function fetchApi<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const userId = getUserId()
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      'X-User-Id': userId,
       ...options.headers,
     },
   })
@@ -55,5 +52,5 @@ export async function fetchApi<T>(
 }
 
 export function createEventSource(path: string): EventSource {
-  return new EventSource(`${BASE_URL}${path}`)
+  return new EventSource(`${BASE_URL}${path}`, { withCredentials: true })
 }

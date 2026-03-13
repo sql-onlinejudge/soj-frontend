@@ -15,6 +15,7 @@ import {
   getRun,
 } from '../services/api'
 import { useSubmissionStore } from '../stores/submissionStore'
+import { useAuthStore } from '../stores/authStore'
 import type {
   ProblemDetail,
   Testcase,
@@ -32,6 +33,7 @@ import { JudgeResult } from '../components/submission/JudgeResult'
 import { SubmissionHistory } from '../components/submission/SubmissionHistory'
 import { SubmissionDetailModal } from '../components/submission/SubmissionDetailModal'
 import { ComingSoonModal } from '../components/common/ComingSoonModal'
+import { LoginModal } from '../components/common/LoginModal'
 import { Button } from '../components/common/Button'
 import { NotFoundPage } from './NotFoundPage'
 
@@ -39,6 +41,7 @@ export function ProblemPage() {
   const { problemId } = useParams<{ problemId: string }>()
   const navigate = useNavigate()
   const { subscribeSubmission } = useSubmissionStore()
+  const { isLoggedIn } = useAuthStore()
 
   const [problem, setProblem] = useState<ProblemDetail | null>(null)
   const [testcases, setTestcases] = useState<Testcase[]>([])
@@ -60,6 +63,7 @@ export function ProblemPage() {
   const [selectedSubmission, setSelectedSubmission] = useState<SubmissionDetail | null>(null)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
@@ -108,6 +112,10 @@ export function ProblemPage() {
 
   const handleSubmit = async () => {
     if (!problemId || !code.trim()) return
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true)
+      return
+    }
 
     setIsSubmitting(true)
     setCurrentQuery(code)
@@ -193,6 +201,10 @@ export function ProblemPage() {
 
   const handleRun = async () => {
     if (!problemId || !code.trim()) return
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true)
+      return
+    }
 
     setIsRunning(true)
     setRunResult({ runId: 0, status: 'IN_PROGRESS', results: null })
@@ -393,6 +405,11 @@ export function ProblemPage() {
       <ComingSoonModal
         isOpen={isComingSoonModalOpen}
         onClose={() => setIsComingSoonModalOpen(false)}
+      />
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
       />
     </>
   )

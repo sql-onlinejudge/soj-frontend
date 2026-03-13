@@ -36,7 +36,7 @@ export interface ProblemListItem {
   difficulty: number
   solvedCount: number
   submissionCount: number
-  acceptanceRate: number
+  acceptanceRate: number | null
   trialStatus: TrialStatus | null
   createdAt: string
 }
@@ -52,7 +52,7 @@ export interface ProblemDetail {
   isOrderSensitive: boolean
   solvedCount: number
   submissionCount: number
-  acceptanceRate: number
+  acceptanceRate: number | null
   trialStatus: TrialStatus | null
   createdAt: string
   updatedAt: string

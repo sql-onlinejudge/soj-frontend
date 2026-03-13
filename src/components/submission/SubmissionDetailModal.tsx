@@ -8,7 +8,6 @@ interface SubmissionDetailModalProps {
   onClose: () => void
   submission: SubmissionDetail | null
   onProblemClick: (problemId: number) => void
-  onUserClick: (userId: string) => void
 }
 
 export function SubmissionDetailModal({
@@ -16,7 +15,6 @@ export function SubmissionDetailModal({
   onClose,
   submission,
   onProblemClick,
-  onUserClick,
 }: SubmissionDetailModalProps) {
   if (!submission) return null
 
@@ -68,18 +66,6 @@ export function SubmissionDetailModal({
             <p className="text-sm text-text-primary">
               {formatDateTime(submission.createdAt)}
             </p>
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold text-text-secondary mb-1">푼 사람</p>
-            <button
-              onClick={() => onUserClick(submission.userId)}
-              aria-label={`사용자 ${submission.userId} 프로필 보기`}
-              className="text-[13px] text-text-secondary hover:text-brand-primary transition-colors"
-              style={{ fontFamily: 'JetBrains Mono' }}
-            >
-              {submission.userId}
-            </button>
           </div>
         </div>
       </div>

@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { Modal } from './Modal'
-import { getGoogleLoginUrl, getGithubLoginUrl } from '../../services/api/auth'
+import { getGoogleLoginUrl, getGithubLoginUrl, testLogin } from '../../services/api/auth'
+import { useAuthStore } from '../../stores/authStore'
+import type { UserRole } from '../../types'
 
 const RETURN_KEY = 'soj-login-return'
 
@@ -13,6 +16,10 @@ function saveReturnPath() {
 }
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+  const { login } = useAuthStore()
+  const [isTestLoginLoading, setIsTestLoginLoading] = useState(false)
+  const isDev = import.meta.env.DEV
+
   const handleGoogle = () => {
     saveReturnPath()
     window.location.href = getGoogleLoginUrl()
@@ -21,6 +28,19 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const handleGithub = () => {
     saveReturnPath()
     window.location.href = getGithubLoginUrl()
+  }
+
+  const handleTestLogin = async (role: UserRole) => {
+    setIsTestLoginLoading(true)
+    try {
+      await testLogin(role)
+      login()
+      onClose()
+    } catch (error) {
+      console.error('Test login failed:', error)
+    } finally {
+      setIsTestLoginLoading(false)
+    }
   }
 
   return (
@@ -59,6 +79,35 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </svg>
             <span className="text-sm font-medium text-text-primary">GitHub로 계속</span>
           </button>
+
+          {isDev && (
+            <>
+              <div className="relative my-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border-input"></div>
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="bg-surface-muted px-2 text-text-muted">개발 전용</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleTestLogin('USER')}
+                disabled={isTestLoginLoading}
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg border border-border-input bg-surface-panel hover:bg-surface-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="text-sm font-medium text-text-primary">테스트 로그인 (USER)</span>
+              </button>
+
+              <button
+                onClick={() => handleTestLogin('ADMIN')}
+                disabled={isTestLoginLoading}
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg border border-border-input bg-surface-panel hover:bg-surface-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="text-sm font-medium text-text-primary">테스트 로그인 (ADMIN)</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
     </Modal>

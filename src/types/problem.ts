@@ -65,3 +65,14 @@ export interface Testcase {
   answer: string
   answerMetadata: AnswerMetadata | null
 }
+
+export type RecommendationTrigger = 'SOLVED' | 'LEAVING'
+
+export interface RecommendationResponse {
+  id: number
+  title: string
+  difficulty: number
+  solvedCount: number
+  submissionCount: number
+  acceptanceRate: number
+}

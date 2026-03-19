@@ -13,6 +13,7 @@ import {
   createRun,
   subscribeToRun,
   getRun,
+  getRecommendations,
 } from '../services/api'
 import { useSubmissionStore } from '../stores/submissionStore'
 import { useAuthStore } from '../stores/authStore'
@@ -24,6 +25,8 @@ import type {
   SubmissionStatus,
   Verdict,
   RunResult,
+  RecommendationResponse,
+  RecommendationTrigger,
 } from '../types'
 import { ProblemDescription } from '../components/problem/ProblemDescription'
 import { CodeEditor } from '../components/problem/CodeEditor'
@@ -35,6 +38,7 @@ import { SubmissionDetailModal } from '../components/submission/SubmissionDetail
 import { ComingSoonModal } from '../components/common/ComingSoonModal'
 import { LoginModal } from '../components/common/LoginModal'
 import { Button } from '../components/common/Button'
+import { RecommendationPanel } from '../components/problem/RecommendationPanel'
 import { NotFoundPage } from './NotFoundPage'
 
 export function ProblemPage() {
@@ -65,6 +69,9 @@ export function ProblemPage() {
   const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [notFound, setNotFound] = useState(false)
+
+  const [recommendations, setRecommendations] = useState<RecommendationResponse[]>([])
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
 
   useEffect(() => {
     if (!problemId) return
@@ -110,6 +117,23 @@ export function ProblemPage() {
     }
   }, [activeTab, fetchSubmissions])
 
+  const fetchRecommendations = useCallback(
+    async (trigger: RecommendationTrigger) => {
+      if (!problemId || !isLoggedIn) return
+
+      setIsLoadingRecommendations(true)
+      try {
+        const data = await getRecommendations(Number(problemId), trigger)
+        setRecommendations(data)
+      } catch (error) {
+        console.error('Failed to fetch recommendations:', error)
+      } finally {
+        setIsLoadingRecommendations(false)
+      }
+    },
+    [problemId, isLoggedIn]
+  )
+
   const handleSubmit = async () => {
     if (!problemId || !code.trim()) return
     if (!isLoggedIn) {
@@ -140,6 +164,10 @@ export function ProblemPage() {
             setCurrentVerdict(data.verdict as Verdict | null)
             unsubscribe()
             fetchSubmissions()
+            
+            // Fetch recommendations based on verdict
+            const trigger: RecommendationTrigger = data.verdict === 'ACCEPTED' ? 'SOLVED' : 'LEAVING'
+            fetchRecommendations(trigger)
           }
         },
         async () => {
@@ -148,6 +176,8 @@ export function ProblemPage() {
           setCurrentVerdict(detail.verdict)
           if (detail.status === 'COMPLETED') {
             fetchSubmissions()
+            const trigger: RecommendationTrigger = detail.verdict === 'ACCEPTED' ? 'SOLVED' : 'LEAVING'
+            fetchRecommendations(trigger)
           }
         }
       )
@@ -159,6 +189,8 @@ export function ProblemPage() {
           setCurrentVerdict(detail.verdict)
           unsubscribe()
           fetchSubmissions()
+          const trigger: RecommendationTrigger = detail.verdict === 'ACCEPTED' ? 'SOLVED' : 'LEAVING'
+          fetchRecommendations(trigger)
         }
       }, 500)
 
@@ -282,8 +314,16 @@ export function ProblemPage() {
                   <span className="mr-1">←</span> 목록으로
                 </Button>
               </div>
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 overflow-auto">
                 <ProblemDescription problem={problem} testcases={testcases} />
+                {recommendations.length > 0 && (
+                  <div className="p-6 pt-0">
+                    <RecommendationPanel
+                      recommendations={recommendations}
+                      isLoading={isLoadingRecommendations}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </Allotment.Pane>
@@ -348,6 +388,14 @@ export function ProblemPage() {
         </div>
         <div className="h-[50vh] overflow-hidden">
           <ProblemDescription problem={problem} testcases={testcases} />
+          {recommendations.length > 0 && (
+            <div className="p-4">
+              <RecommendationPanel
+                recommendations={recommendations}
+                isLoading={isLoadingRecommendations}
+              />
+            </div>
+          )}
         </div>
         <div className="h-[300px]">
           <CodeEditor

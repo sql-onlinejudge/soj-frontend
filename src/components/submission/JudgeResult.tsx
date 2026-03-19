@@ -1,13 +1,16 @@
-import type { SubmissionStatus, Verdict } from '../../types'
+import type { SubmissionStatus, Verdict, RecommendationResponse } from '../../types'
 import { VerdictBadge } from '../badges/VerdictBadge'
+import { RecommendationPanel } from '../problem/RecommendationPanel'
 
 interface JudgeResultProps {
   status: SubmissionStatus | null
   verdict: Verdict | null
   query: string
+  recommendations?: RecommendationResponse[]
+  isLoadingRecommendations?: boolean
 }
 
-export function JudgeResult({ status, verdict, query }: JudgeResultProps) {
+export function JudgeResult({ status, verdict, query, recommendations = [], isLoadingRecommendations }: JudgeResultProps) {
   if (!status) {
     return (
       <div className="p-5 text-text-muted">
@@ -34,6 +37,13 @@ export function JudgeResult({ status, verdict, query }: JudgeResultProps) {
           </pre>
         </div>
       </div>
+
+      {status === 'COMPLETED' && (isLoadingRecommendations || recommendations.length > 0) && (
+        <RecommendationPanel
+          recommendations={recommendations}
+          isLoading={isLoadingRecommendations}
+        />
+      )}
     </div>
   )
 }

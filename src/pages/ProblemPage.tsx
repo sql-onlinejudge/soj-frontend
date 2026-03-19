@@ -38,7 +38,6 @@ import { SubmissionDetailModal } from '../components/submission/SubmissionDetail
 import { ComingSoonModal } from '../components/common/ComingSoonModal'
 import { LoginModal } from '../components/common/LoginModal'
 import { Button } from '../components/common/Button'
-import { RecommendationPanel } from '../components/problem/RecommendationPanel'
 import { NotFoundPage } from './NotFoundPage'
 
 export function ProblemPage() {
@@ -316,14 +315,6 @@ export function ProblemPage() {
               </div>
               <div className="flex-1 overflow-auto">
                 <ProblemDescription problem={problem} testcases={testcases} />
-                {recommendations.length > 0 && (
-                  <div className="p-6 pt-0">
-                    <RecommendationPanel
-                      recommendations={recommendations}
-                      isLoading={isLoadingRecommendations}
-                    />
-                  </div>
-                )}
               </div>
             </div>
           </Allotment.Pane>
@@ -356,6 +347,8 @@ export function ProblemPage() {
                           status={currentStatus}
                           verdict={currentVerdict}
                           query={currentQuery}
+                          recommendations={recommendations}
+                          isLoadingRecommendations={isLoadingRecommendations}
                         />
                       )
                     }
@@ -388,14 +381,6 @@ export function ProblemPage() {
         </div>
         <div className="h-[50vh] overflow-hidden">
           <ProblemDescription problem={problem} testcases={testcases} />
-          {recommendations.length > 0 && (
-            <div className="p-4">
-              <RecommendationPanel
-                recommendations={recommendations}
-                isLoading={isLoadingRecommendations}
-              />
-            </div>
-          )}
         </div>
         <div className="h-[300px]">
           <CodeEditor
@@ -422,6 +407,8 @@ export function ProblemPage() {
                     status={currentStatus}
                     verdict={currentVerdict}
                     query={currentQuery}
+                    recommendations={recommendations}
+                    isLoadingRecommendations={isLoadingRecommendations}
                   />
                 )
               }

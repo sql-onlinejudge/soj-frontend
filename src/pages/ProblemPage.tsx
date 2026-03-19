@@ -14,6 +14,7 @@ import {
   subscribeToRun,
   getRun,
   getRecommendations,
+  trackEvent,
 } from '../services/api'
 import { useSubmissionStore } from '../stores/submissionStore'
 import { useAuthStore } from '../stores/authStore'
@@ -95,6 +96,13 @@ export function ProblemPage() {
         ])
         setProblem(problemData)
         setTestcases(testcasesData)
+
+        if (isLoggedIn) {
+          trackEvent({
+            eventType: 'PROBLEM_VIEW',
+            targetId: problemId,
+          }).catch(() => {})
+        }
       } catch (error) {
         if (error instanceof Error && error.message.includes('404')) {
           setNotFound(true)
@@ -104,7 +112,7 @@ export function ProblemPage() {
     }
 
     fetchData()
-  }, [problemId])
+  }, [problemId, isLoggedIn])
 
   const fetchSubmissions = useCallback(async () => {
     if (!problemId) return
@@ -154,13 +162,21 @@ export function ProblemPage() {
   useEffect(() => {
     if (blocker.state !== 'blocked') return
     isLeavingRef.current = true
+
+    if (isLoggedIn && problemId) {
+      trackEvent({
+        eventType: 'PROBLEM_LEAVE',
+        targetId: problemId,
+      }).catch(() => {})
+    }
+
     fetchRecommendations('LEAVING').then((opened) => {
       if (!opened) {
         isLeavingRef.current = false
         blocker.proceed()
       }
     })
-  }, [blocker.state])
+  }, [blocker.state, isLoggedIn, problemId])
 
   const handleRecommendationModalClose = useCallback(() => {
     setIsRecommendationModalOpen(false)

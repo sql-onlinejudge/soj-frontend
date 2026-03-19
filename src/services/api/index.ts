@@ -1,5 +1,6 @@
 export * from './auth'
 export * from './client'
+export * from './events'
 export * from './problems'
 export * from './runs'
 export * from './stats'

@@ -1,5 +1,5 @@
 import { fetchApi } from './client'
-import type { PaginatedResponse, ProblemDetail, ProblemListItem, Testcase } from '../../types'
+import type { PaginatedResponse, ProblemDetail, ProblemListItem, Testcase, RecommendationResponse, RecommendationTrigger } from '../../types'
 
 export interface GetProblemsParams {
   keyword?: string
@@ -42,4 +42,15 @@ export async function getTestcases(problemId: number, isVisible?: boolean): Prom
   if (isVisible !== undefined) params.set('isVisible', String(isVisible))
   const query = params.toString()
   return fetchApi<Testcase[]>(`/problems/${problemId}/testcases${query ? `?${query}` : ''}`)
+}
+
+export async function getRecommendations(
+  problemId: number,
+  trigger: RecommendationTrigger
+): Promise<RecommendationResponse[]> {
+  const params = new URLSearchParams()
+  params.set('trigger', trigger)
+  return fetchApi<RecommendationResponse[]>(
+    `/problems/${problemId}/recommendations?${params.toString()}`
+  )
 }

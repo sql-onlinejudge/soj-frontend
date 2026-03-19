@@ -169,6 +169,14 @@ export function ProblemPage() {
     }
   }, [blocker])
 
+  const handleRecommendationProblemClick = useCallback(() => {
+    setIsRecommendationModalOpen(false)
+    if (isLeavingRef.current && blocker.state === 'blocked') {
+      isLeavingRef.current = false
+      blocker.reset()
+    }
+  }, [blocker])
+
   const handleSubmit = async () => {
     if (!problemId || !code.trim()) return
     if (!isLoggedIn) {
@@ -487,6 +495,7 @@ export function ProblemPage() {
       <RecommendationModal
         isOpen={isRecommendationModalOpen}
         onClose={handleRecommendationModalClose}
+        onProblemClick={handleRecommendationProblemClick}
         recommendations={recommendations}
         trigger={recommendationTrigger}
       />

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { Header } from './components/common/Header'
 import { HomePage } from './pages/HomePage'
@@ -11,7 +11,7 @@ import { OAuthCallbackPage } from './pages/OAuthCallbackPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { useUIStore, applyTheme } from './stores/uiStore'
 
-function App() {
+function Layout() {
   const themePreference = useUIStore((s) => s.themePreference)
 
   useEffect(() => {
@@ -19,20 +19,9 @@ function App() {
   }, [themePreference])
 
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-surface-bg transition-colors">
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/problems" element={<ProblemsPage />} />
-          <Route path="/problems/:problemId" element={<ProblemPage />} />
-          <Route path="/workbooks" element={<WorkbooksPage />} />
-          <Route path="/workbooks/:workbookId" element={<WorkbookDetailPage />} />
-          <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </div>
-
+    <div className="min-h-screen bg-surface-bg transition-colors">
+      <Header />
+      <Outlet />
       <Toaster
         position="bottom-right"
         toastOptions={{
@@ -44,8 +33,27 @@ function App() {
           },
         }}
       />
-    </BrowserRouter>
+    </div>
   )
+}
+
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/problems', element: <ProblemsPage /> },
+      { path: '/problems/:problemId', element: <ProblemPage /> },
+      { path: '/workbooks', element: <WorkbooksPage /> },
+      { path: '/workbooks/:workbookId', element: <WorkbookDetailPage /> },
+      { path: '/oauth/callback', element: <OAuthCallbackPage /> },
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+])
+
+function App() {
+  return <RouterProvider router={router} />
 }
 
 export default App

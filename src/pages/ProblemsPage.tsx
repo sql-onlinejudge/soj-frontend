@@ -26,7 +26,7 @@ export function ProblemsPage() {
   const initialKeyword = searchParams.get('q') || ''
   const initialPage = Number(searchParams.get('page')) || 0
   const initialMinDiff = Number(searchParams.get('minDiff')) || 1
-  const initialMaxDiff = Number(searchParams.get('maxDiff')) || 5
+  const initialMaxDiff = Number(searchParams.get('maxDiff')) || 20
   const initialSorts = parseSortsFromUrl(searchParams.get('sort'))
   const initialTrialStatus = searchParams.get('status') || null
 
@@ -46,7 +46,7 @@ export function ProblemsPage() {
     if (debouncedKeyword) params.set('q', debouncedKeyword)
     if (page > 0) params.set('page', String(page))
     if (minDifficulty > 1) params.set('minDiff', String(minDifficulty))
-    if (maxDifficulty < 5) params.set('maxDiff', String(maxDifficulty))
+    if (maxDifficulty < 20) params.set('maxDiff', String(maxDifficulty))
     if (trialStatus) params.set('status', trialStatus)
     const defaultSort = sorts.length === 1 && sorts[0].field === 'id' && sorts[0].direction === 'asc'
     if (!defaultSort) params.set('sort', sortsToUrl(sorts))

@@ -49,15 +49,15 @@ export function FilterPanel({
           <div
             className="absolute top-1/2 -translate-y-1/2 h-1 bg-brand-primary rounded-full"
             style={{
-              left: `${((minDifficulty - 1) / 4) * 100}%`,
-              right: `${((5 - maxDifficulty) / 4) * 100}%`,
+              left: `${((minDifficulty - 1) / 19) * 100}%`,
+              right: `${((20 - maxDifficulty) / 19) * 100}%`,
             }}
             aria-hidden="true"
           />
           <input
             type="range"
             min="1"
-            max="5"
+            max="20"
             step="1"
             value={minDifficulty}
             onChange={(e) => {
@@ -66,15 +66,15 @@ export function FilterPanel({
             }}
             aria-label="최소 난이도"
             aria-valuemin={1}
-            aria-valuemax={5}
+            aria-valuemax={20}
             aria-valuenow={minDifficulty}
             className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none touch-manipulation [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-surface-bg [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
-            style={{ zIndex: minDifficulty > 3 ? 5 : 3 }}
+            style={{ zIndex: minDifficulty > 10 ? 5 : 3 }}
           />
           <input
             type="range"
             min="1"
-            max="5"
+            max="20"
             step="1"
             value={maxDifficulty}
             onChange={(e) => {
@@ -83,14 +83,14 @@ export function FilterPanel({
             }}
             aria-label="최대 난이도"
             aria-valuemin={1}
-            aria-valuemax={5}
+            aria-valuemax={20}
             aria-valuenow={maxDifficulty}
             className="absolute top-0 left-0 w-full h-5 appearance-none bg-transparent cursor-pointer pointer-events-none touch-manipulation [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand-primary [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-surface-bg [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:cursor-grab"
-            style={{ zIndex: maxDifficulty <= 3 ? 5 : 3 }}
+            style={{ zIndex: maxDifficulty <= 10 ? 5 : 3 }}
           />
         </div>
         <div className="flex justify-between mt-1 text-xs text-text-muted mx-1" aria-hidden="true">
-          {[1, 2, 3, 4, 5].map((level) => (
+          {[1, 5, 10, 15, 20].map((level) => (
             <span key={level}>{level}</span>
           ))}
         </div>

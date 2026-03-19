@@ -86,6 +86,17 @@ export function ProblemPage() {
   }, [])
 
   useEffect(() => {
+    setCode('SELECT ')
+    setCurrentStatus(null)
+    setCurrentVerdict(null)
+    setCurrentQuery('')
+    setHasSolved(false)
+    setHasAttempted(false)
+    setBlockingEnabled(true)
+    setRecommendations([])
+  }, [problemId])
+
+  useEffect(() => {
     if (!problemId) return
 
     const fetchData = async () => {

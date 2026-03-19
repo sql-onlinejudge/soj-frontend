@@ -38,6 +38,7 @@ import { SubmissionDetailModal } from '../components/submission/SubmissionDetail
 import { ComingSoonModal } from '../components/common/ComingSoonModal'
 import { LoginModal } from '../components/common/LoginModal'
 import { Button } from '../components/common/Button'
+import { RecommendationModal } from '../components/problem/RecommendationModal'
 import { NotFoundPage } from './NotFoundPage'
 
 export function ProblemPage() {
@@ -70,7 +71,8 @@ export function ProblemPage() {
   const [notFound, setNotFound] = useState(false)
 
   const [recommendations, setRecommendations] = useState<RecommendationResponse[]>([])
-  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
+
+  const [isRecommendationModalOpen, setIsRecommendationModalOpen] = useState(false)
 
   useEffect(() => {
     if (!problemId) return
@@ -120,14 +122,12 @@ export function ProblemPage() {
     async (trigger: RecommendationTrigger) => {
       if (!problemId || !isLoggedIn) return
 
-      setIsLoadingRecommendations(true)
       try {
         const data = await getRecommendations(Number(problemId), trigger)
         setRecommendations(data)
+        if (data.length > 0) setIsRecommendationModalOpen(true)
       } catch (error) {
         console.error('Failed to fetch recommendations:', error)
-      } finally {
-        setIsLoadingRecommendations(false)
       }
     },
     [problemId, isLoggedIn]
@@ -347,8 +347,6 @@ export function ProblemPage() {
                           status={currentStatus}
                           verdict={currentVerdict}
                           query={currentQuery}
-                          recommendations={recommendations}
-                          isLoadingRecommendations={isLoadingRecommendations}
                         />
                       )
                     }
@@ -407,8 +405,6 @@ export function ProblemPage() {
                     status={currentStatus}
                     verdict={currentVerdict}
                     query={currentQuery}
-                    recommendations={recommendations}
-                    isLoadingRecommendations={isLoadingRecommendations}
                   />
                 )
               }
@@ -445,6 +441,11 @@ export function ProblemPage() {
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
+      />
+      <RecommendationModal
+        isOpen={isRecommendationModalOpen}
+        onClose={() => setIsRecommendationModalOpen(false)}
+        recommendations={recommendations}
       />
     </>
   )

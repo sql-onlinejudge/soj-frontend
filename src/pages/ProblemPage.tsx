@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useParams, useNavigate, useBlocker } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Allotment } from 'allotment'
 import 'allotment/dist/style.css'
@@ -71,8 +71,18 @@ export function ProblemPage() {
   const [notFound, setNotFound] = useState(false)
 
   const [recommendations, setRecommendations] = useState<RecommendationResponse[]>([])
-
+  const [recommendationTrigger, setRecommendationTrigger] = useState<RecommendationTrigger>('SOLVED')
   const [isRecommendationModalOpen, setIsRecommendationModalOpen] = useState(false)
+
+  const [hasSolved, setHasSolved] = useState(false)
+  const [hasAttempted, setHasAttempted] = useState(false)
+  const [has30sElapsed, setHas30sElapsed] = useState(false)
+  const isLeavingRef = useRef(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setHas30sElapsed(true), 30_000)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     if (!problemId) return
@@ -119,19 +129,45 @@ export function ProblemPage() {
   }, [activeTab, fetchSubmissions])
 
   const fetchRecommendations = useCallback(
-    async (trigger: RecommendationTrigger) => {
-      if (!problemId || !isLoggedIn) return
+    async (trigger: RecommendationTrigger): Promise<boolean> => {
+      if (!problemId || !isLoggedIn) return false
 
       try {
         const data = await getRecommendations(Number(problemId), trigger)
+        if (data.length === 0) return false
         setRecommendations(data)
-        if (data.length > 0) setIsRecommendationModalOpen(true)
+        setRecommendationTrigger(trigger)
+        const delay = trigger === 'SOLVED' ? 500 : 0
+        setTimeout(() => setIsRecommendationModalOpen(true), delay)
+        return true
       } catch (error) {
         console.error('Failed to fetch recommendations:', error)
+        return false
       }
     },
     [problemId, isLoggedIn]
   )
+
+  const blocker = useBlocker(isLoggedIn && !hasSolved && (hasAttempted || has30sElapsed))
+
+  useEffect(() => {
+    if (blocker.state !== 'blocked') return
+    isLeavingRef.current = true
+    fetchRecommendations('LEAVING').then((opened) => {
+      if (!opened) {
+        isLeavingRef.current = false
+        blocker.proceed()
+      }
+    })
+  }, [blocker.state])
+
+  const handleRecommendationModalClose = useCallback(() => {
+    setIsRecommendationModalOpen(false)
+    if (isLeavingRef.current && blocker.state === 'blocked') {
+      isLeavingRef.current = false
+      blocker.proceed()
+    }
+  }, [blocker])
 
   const handleSubmit = async () => {
     if (!problemId || !code.trim()) return
@@ -140,6 +176,7 @@ export function ProblemPage() {
       return
     }
 
+    setHasAttempted(true)
     setIsSubmitting(true)
     setCurrentQuery(code)
     setCurrentStatus('PENDING')
@@ -164,9 +201,10 @@ export function ProblemPage() {
             unsubscribe()
             fetchSubmissions()
             
-            // Fetch recommendations based on verdict
-            const trigger: RecommendationTrigger = data.verdict === 'ACCEPTED' ? 'SOLVED' : 'LEAVING'
-            fetchRecommendations(trigger)
+            if (data.verdict === 'ACCEPTED') {
+              setHasSolved(true)
+              fetchRecommendations('SOLVED')
+            }
           }
         },
         async () => {
@@ -175,8 +213,10 @@ export function ProblemPage() {
           setCurrentVerdict(detail.verdict)
           if (detail.status === 'COMPLETED') {
             fetchSubmissions()
-            const trigger: RecommendationTrigger = detail.verdict === 'ACCEPTED' ? 'SOLVED' : 'LEAVING'
-            fetchRecommendations(trigger)
+            if (detail.verdict === 'ACCEPTED') {
+              setHasSolved(true)
+              fetchRecommendations('SOLVED')
+            }
           }
         }
       )
@@ -188,8 +228,10 @@ export function ProblemPage() {
           setCurrentVerdict(detail.verdict)
           unsubscribe()
           fetchSubmissions()
-          const trigger: RecommendationTrigger = detail.verdict === 'ACCEPTED' ? 'SOLVED' : 'LEAVING'
-          fetchRecommendations(trigger)
+          if (detail.verdict === 'ACCEPTED') {
+            setHasSolved(true)
+            fetchRecommendations('SOLVED')
+          }
         }
       }, 500)
 
@@ -444,8 +486,9 @@ export function ProblemPage() {
       />
       <RecommendationModal
         isOpen={isRecommendationModalOpen}
-        onClose={() => setIsRecommendationModalOpen(false)}
+        onClose={handleRecommendationModalClose}
         recommendations={recommendations}
+        trigger={recommendationTrigger}
       />
     </>
   )

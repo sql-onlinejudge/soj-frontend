@@ -148,7 +148,8 @@ export function ProblemPage() {
     [problemId, isLoggedIn]
   )
 
-  const blocker = useBlocker(isLoggedIn && !hasSolved && (hasAttempted || has30sElapsed))
+  const [blockingEnabled, setBlockingEnabled] = useState(true)
+  const blocker = useBlocker(blockingEnabled && isLoggedIn && !hasSolved && (hasAttempted || has30sElapsed))
 
   useEffect(() => {
     if (blocker.state !== 'blocked') return
@@ -169,13 +170,13 @@ export function ProblemPage() {
     }
   }, [blocker])
 
-  const handleRecommendationProblemClick = useCallback(() => {
+  const handleRecommendationProblemClick = useCallback((to: string) => {
     setIsRecommendationModalOpen(false)
-    if (isLeavingRef.current && blocker.state === 'blocked') {
-      isLeavingRef.current = false
-      blocker.reset()
-    }
-  }, [blocker])
+    isLeavingRef.current = false
+    if (blocker.state === 'blocked') blocker.reset()
+    setBlockingEnabled(false)
+    setTimeout(() => navigate(to), 0)
+  }, [blocker, navigate])
 
   const handleSubmit = async () => {
     if (!problemId || !code.trim()) return

@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { Modal } from '../common/Modal'
 import { DifficultyBadge } from '../badges/DifficultyBadge'
 import { formatNumber } from '../../utils/formatters'
@@ -7,7 +6,7 @@ import type { RecommendationResponse, RecommendationTrigger } from '../../types'
 interface RecommendationModalProps {
   isOpen: boolean
   onClose: () => void
-  onProblemClick: () => void
+  onProblemClick: (to: string) => void
   recommendations: RecommendationResponse[]
   trigger: RecommendationTrigger
 }
@@ -39,11 +38,10 @@ export function RecommendationModal({ isOpen, onClose, onProblemClick, recommend
 
         <div className="space-y-2">
           {recommendations.map((problem) => (
-            <Link
+            <button
               key={problem.id}
-              to={`/problems/${problem.id}`}
-              onClick={onProblemClick}
-              className="flex items-center gap-3 p-3 rounded-lg border border-border-input bg-surface-panel hover:bg-surface-light hover:border-brand-primary transition-all group"
+              onClick={() => onProblemClick(`/problems/${problem.id}`)}
+              className="w-full flex items-center gap-3 p-3 rounded-lg border border-border-input bg-surface-panel hover:bg-surface-light hover:border-brand-primary transition-all group text-left"
             >
               <DifficultyBadge level={problem.difficulty} />
               <div className="flex-1 min-w-0">
@@ -57,7 +55,7 @@ export function RecommendationModal({ isOpen, onClose, onProblemClick, recommend
               <svg className="w-4 h-4 text-text-muted group-hover:text-brand-primary transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </Link>
+            </button>
           ))}
         </div>
 

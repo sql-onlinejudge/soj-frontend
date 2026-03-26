@@ -64,6 +64,7 @@ export interface Testcase {
   initMetadata: InitMetadata | null
   answer: string
   answerMetadata: AnswerMetadata | null
+  isVisible?: boolean
 }
 
 export type RecommendationTrigger = 'SOLVED' | 'LEAVING'

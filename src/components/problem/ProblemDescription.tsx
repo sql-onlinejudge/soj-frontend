@@ -3,6 +3,7 @@ import type { AnswerMetadata, ColumnMetadata, InitMetadata, ProblemDetail, Testc
 import { formatNumber } from '../../utils/formatters'
 import { DifficultyBadge } from '../badges/DifficultyBadge'
 import { StatusBadge } from '../badges/StatusBadge'
+import { CategoryBadge } from '../badges/CategoryBadge'
 
 interface ProblemDescriptionProps {
   problem: ProblemDetail
@@ -135,6 +136,7 @@ export function ProblemDescription({ problem, testcases }: ProblemDescriptionPro
             #{problem.id} {problem.title}
           </h1>
           <DifficultyBadge level={problem.difficulty} />
+          <CategoryBadge category={problem.category} />
           <StatusBadge status={problem.trialStatus} />
         </div>
         <p className="text-base text-text-secondary mb-6">

@@ -29,7 +29,7 @@ export function VerdictBadge({ status, verdict }: VerdictBadgeProps) {
     key = 'PENDING'
   }
 
-  const style = verdictStyles[key]
+  const style = verdictStyles[key] ?? { bg: '#4B556330', color: '#6B7280', label: key }
 
   return (
     <span

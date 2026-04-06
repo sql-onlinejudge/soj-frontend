@@ -12,7 +12,7 @@ const statusStyles: Record<TrialStatus, { bg: string; color: string; label: stri
 
 export function StatusBadge({ status }: StatusBadgeProps) {
   if (!status) return null
-  const style = statusStyles[status]
+  const style = statusStyles[status] ?? { bg: '#4B556330', color: '#6B7280', label: status }
 
   return (
     <span

@@ -10,7 +10,7 @@ const categoryStyles: Record<ProblemCategory, { bg: string; text: string; label:
 }
 
 export function CategoryBadge({ category }: CategoryBadgeProps) {
-  const style = categoryStyles[category]
+  const style = categoryStyles[category] ?? { bg: '#4B556330', text: '#6B7280', label: category }
 
   return (
     <span

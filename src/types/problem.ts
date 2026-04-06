@@ -1,4 +1,5 @@
 export type TrialStatus = 'NOT_ATTEMPTED' | 'ATTEMPTED' | 'SOLVED'
+export type ProblemCategory = 'SQL' | 'ORM'
 
 export interface ColumnMetadata {
   name: string
@@ -34,6 +35,7 @@ export interface ProblemListItem {
   id: number
   title: string
   difficulty: number
+  category: ProblemCategory
   solvedCount: number
   submissionCount: number
   acceptanceRate: number | null
@@ -52,6 +54,7 @@ export interface ProblemDetail {
   isOrderSensitive: boolean
   solvedCount: number
   submissionCount: number
+  category: ProblemCategory
   acceptanceRate: number | null
   trialStatus: TrialStatus | null
   createdAt: string

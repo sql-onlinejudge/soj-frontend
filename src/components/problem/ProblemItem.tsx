@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import type { ProblemListItem } from '../../types'
 import { formatNumber } from '../../utils/formatters'
 import { DifficultyBadge } from '../badges/DifficultyBadge'
+import { CategoryBadge } from '../badges/CategoryBadge'
 import { StatusBadge } from '../badges/StatusBadge'
 
 interface ProblemItemProps {
@@ -16,6 +17,7 @@ export function ProblemItem({ problem }: ProblemItemProps) {
     >
       <div className="flex items-center gap-3 min-w-0">
         <DifficultyBadge level={problem.difficulty} />
+        <CategoryBadge category={problem.category} />
         <span
           title={`#${problem.id} ${problem.title}`}
           className="text-sm font-semibold text-text-primary group-hover:text-brand-primary truncate transition-colors"

@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import { useEffect, useState } from 'react'
 import { useAuthStore } from '../stores/authStore'
 import { useSandboxStore } from '../stores/sandboxStore'
 import { LoginModal } from '../components/common/LoginModal'
 import { ImageUploadZone } from '../components/sandbox/ImageUploadZone'
 import { SetupResult } from '../components/sandbox/SetupResult'
-import { SessionCountdown } from '../components/sandbox/SessionCountdown'
 import { SandboxEditor } from '../components/sandbox/SandboxEditor'
 import { SandboxQueryResult } from '../components/sandbox/SandboxQueryResult'
 
@@ -22,7 +20,6 @@ export function SandboxPage() {
   const restoreSession = useSandboxStore((s) => s.restoreSession)
   const resetSession = useSandboxStore((s) => s.resetSession)
   const closeSession = useSandboxStore((s) => s.closeSession)
-  const markExpired = useSandboxStore((s) => s.markExpired)
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -37,11 +34,6 @@ export function SandboxPage() {
     window.addEventListener('beforeunload', handleUnload)
     return () => window.removeEventListener('beforeunload', handleUnload)
   }, [closeSession])
-
-  const handleExpired = useCallback(() => {
-    toast.error('세션이 만료되었습니다.')
-    markExpired()
-  }, [markExpired])
 
   const handleRun = () => {
     if (!isLoggedIn) {
@@ -75,7 +67,6 @@ export function SandboxPage() {
                 <SetupResult session={session} collapsed />
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <SessionCountdown expiresAt={session.expiresAt} onExpired={handleExpired} />
                 <button
                   onClick={resetSession}
                   className="text-xs text-text-muted hover:text-text-secondary transition-colors"

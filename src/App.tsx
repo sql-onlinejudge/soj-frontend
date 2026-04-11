@@ -9,6 +9,7 @@ import { WorkbooksPage } from './pages/WorkbooksPage'
 import { WorkbookDetailPage } from './pages/WorkbookDetailPage'
 import { OAuthCallbackPage } from './pages/OAuthCallbackPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { SandboxPage } from './pages/SandboxPage'
 import { useUIStore, applyTheme } from './stores/uiStore'
 
 function Layout() {
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: '/problems/:problemId', element: <ProblemPage /> },
       { path: '/workbooks', element: <WorkbooksPage /> },
       { path: '/workbooks/:workbookId', element: <WorkbookDetailPage /> },
+      { path: '/sandbox', element: <SandboxPage /> },
       { path: '/oauth/callback', element: <OAuthCallbackPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],

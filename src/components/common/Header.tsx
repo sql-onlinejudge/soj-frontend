@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useUIStore } from '../../stores/uiStore'
 import { useAuthStore } from '../../stores/authStore'
 import { logout as logoutApi } from '../../services/api/auth'
@@ -11,6 +11,7 @@ export function Header() {
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
   const logout = useAuthStore((s) => s.logout)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const { pathname } = useLocation()
 
   const toggleTheme = () => {
     setThemePreference(themePreference === 'dark' ? 'light' : 'dark')
@@ -33,6 +34,13 @@ export function Header() {
           <span className="text-text-primary text-lg font-medium" style={{ fontFamily: 'JetBrains Mono' }}>Querify</span>
         </Link>
         <div className="flex items-center gap-6">
+          <Link
+            to="/sandbox"
+            className={`text-[13px] font-medium transition-colors ${pathname === '/sandbox' ? 'text-brand-primary' : 'text-text-secondary hover:text-text-primary'}`}
+            style={{ fontFamily: 'JetBrains Mono' }}
+          >
+            OCR 샌드박스
+          </Link>
           <button
             onClick={toggleTheme}
             role="switch"

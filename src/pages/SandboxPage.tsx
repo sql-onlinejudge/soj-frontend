@@ -6,6 +6,7 @@ import { ImageUploadZone } from '../components/sandbox/ImageUploadZone'
 import { SetupResult } from '../components/sandbox/SetupResult'
 import { SandboxEditor } from '../components/sandbox/SandboxEditor'
 import { SandboxQueryResult } from '../components/sandbox/SandboxQueryResult'
+import { SandboxHistory } from '../components/sandbox/SandboxHistory'
 
 export function SandboxPage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
@@ -91,6 +92,9 @@ export function SandboxPage() {
             />
           </>
         ) : null}
+        {isLoggedIn && (
+          <SandboxHistory currentSessionKey={session?.sessionKey} />
+        )}
       </main>
 
       <LoginModal

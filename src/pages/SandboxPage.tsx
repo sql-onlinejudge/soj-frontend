@@ -21,6 +21,8 @@ export function SandboxPage() {
   const restoreSession = useSandboxStore((s) => s.restoreSession)
   const resetSession = useSandboxStore((s) => s.resetSession)
   const closeSession = useSandboxStore((s) => s.closeSession)
+  const loadSession = useSandboxStore((s) => s.loadSession)
+  const reactivateSession = useSandboxStore((s) => s.reactivateSession)
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -93,7 +95,11 @@ export function SandboxPage() {
           </>
         ) : null}
         {isLoggedIn && (
-          <SandboxHistory currentSessionKey={session?.sessionKey} />
+          <SandboxHistory
+            currentSessionKey={session?.sessionKey}
+            onLoad={loadSession}
+            onReactivate={reactivateSession}
+          />
         )}
       </main>
 

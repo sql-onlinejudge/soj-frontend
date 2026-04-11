@@ -5,6 +5,7 @@ import {
   querySandbox,
   getSandboxSession,
   closeSandboxSession,
+  reactivateSandboxSession,
 } from '../services/api'
 import { ApiError } from '../services/api/client'
 
@@ -26,16 +27,23 @@ function getErrorMessage(error: unknown): string {
   return '죄송합니다. 처리 중 오류가 발생했습니다.'
 }
 
+function toSession(data: { sessionKey: string; schemaName: string; extractedSql: string; expiresAt: string }): SandboxSession {
+  return { ...data, status: 'ACTIVE', createdAt: '' }
+}
+
 interface SandboxState {
   phase: 'idle' | 'uploading' | 'ready' | 'querying'
   session: SandboxSession | null
   queryResult: SandboxQueryResponse | null
   setupError: string | null
   queryError: string | null
+  isReactivating: boolean
 
   setupSandbox: (image: File) => Promise<void>
   runQuery: (query: string) => Promise<void>
   restoreSession: () => Promise<void>
+  loadSession: (session: SandboxSession) => void
+  reactivateSession: (sessionKey: string) => Promise<void>
   resetSession: () => void
   closeSession: () => void
   markExpired: () => void
@@ -47,11 +55,13 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
   queryResult: null,
   setupError: null,
   queryError: null,
+  isReactivating: false,
 
   setupSandbox: async (image: File) => {
     set({ phase: 'uploading', setupError: null })
     try {
-      const session = await setupSandboxApi(image)
+      const data = await setupSandboxApi(image)
+      const session = toSession(data)
       sessionStorage.setItem(SESSION_STORAGE_KEY, session.sessionKey)
       set({ phase: 'ready', session, queryResult: null })
     } catch (error) {
@@ -90,6 +100,23 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
       if (error instanceof ApiError && (error.status === 410 || error.status === 404)) {
         sessionStorage.removeItem(SESSION_STORAGE_KEY)
       }
+    }
+  },
+
+  loadSession: (session: SandboxSession) => {
+    sessionStorage.setItem(SESSION_STORAGE_KEY, session.sessionKey)
+    set({ phase: 'ready', session, queryResult: null, queryError: null })
+  },
+
+  reactivateSession: async (sessionKey: string) => {
+    set({ isReactivating: true })
+    try {
+      const data = await reactivateSandboxSession(sessionKey)
+      const session = toSession(data)
+      sessionStorage.setItem(SESSION_STORAGE_KEY, session.sessionKey)
+      set({ phase: 'ready', session, queryResult: null, queryError: null })
+    } finally {
+      set({ isReactivating: false })
     }
   },
 

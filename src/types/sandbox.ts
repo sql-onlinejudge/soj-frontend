@@ -1,5 +1,12 @@
 export type SandboxSessionStatus = 'ACTIVE' | 'CLOSED' | 'EXPIRED'
 
+export interface SandboxSetupResponse {
+  sessionKey: string
+  schemaName: string
+  extractedSql: string
+  expiresAt: string
+}
+
 export interface SandboxSession {
   sessionKey: string
   schemaName: string

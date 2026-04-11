@@ -1,8 +1,8 @@
 import { BASE_URL, ApiError, fetchApi } from './client'
 import { useAuthStore } from '../../stores/authStore'
-import type { SandboxSession, SandboxQueryResponse } from '../../types'
+import type { SandboxSession, SandboxSetupResponse, SandboxQueryResponse } from '../../types'
 
-export async function setupSandbox(image: File): Promise<SandboxSession> {
+export async function setupSandbox(image: File): Promise<SandboxSetupResponse> {
   const formData = new FormData()
   formData.append('image', image)
 
@@ -49,6 +49,14 @@ export async function getSandboxSession(sessionKey: string): Promise<SandboxSess
 
 export async function getSandboxHistory(): Promise<SandboxSession[]> {
   return fetchApi<SandboxSession[]>('/runs/sandbox')
+}
+
+export async function reactivateSandboxSession(
+  sessionKey: string
+): Promise<SandboxSetupResponse> {
+  return fetchApi<SandboxSetupResponse>(`/runs/sandbox/${sessionKey}/reactivate`, {
+    method: 'POST',
+  })
 }
 
 export function closeSandboxSession(sessionKey: string): void {

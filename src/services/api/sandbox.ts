@@ -46,3 +46,15 @@ export async function querySandbox(
 export async function getSandboxSession(sessionKey: string): Promise<SandboxSession> {
   return fetchApi<SandboxSession>(`/runs/sandbox/${sessionKey}`)
 }
+
+export async function getSandboxHistory(): Promise<SandboxSession[]> {
+  return fetchApi<SandboxSession[]>('/runs/sandbox')
+}
+
+export function closeSandboxSession(sessionKey: string): void {
+  fetch(`${BASE_URL}/runs/sandbox/${sessionKey}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    keepalive: true,
+  })
+}

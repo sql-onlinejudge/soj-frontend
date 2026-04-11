@@ -21,6 +21,7 @@ export function SandboxPage() {
   const runQuery = useSandboxStore((s) => s.runQuery)
   const restoreSession = useSandboxStore((s) => s.restoreSession)
   const resetSession = useSandboxStore((s) => s.resetSession)
+  const closeSession = useSandboxStore((s) => s.closeSession)
   const markExpired = useSandboxStore((s) => s.markExpired)
 
   useEffect(() => {
@@ -30,6 +31,12 @@ export function SandboxPage() {
     }
     restoreSession()
   }, [isLoggedIn, restoreSession])
+
+  useEffect(() => {
+    const handleUnload = () => closeSession()
+    window.addEventListener('beforeunload', handleUnload)
+    return () => window.removeEventListener('beforeunload', handleUnload)
+  }, [closeSession])
 
   const handleExpired = useCallback(() => {
     toast.error('세션이 만료되었습니다.')

@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import type { SandboxSession, SandboxQueryResponse } from '../types'
-import { setupSandbox as setupSandboxApi, querySandbox, getSandboxSession } from '../services/api'
+import {
+  setupSandbox as setupSandboxApi,
+  querySandbox,
+  getSandboxSession,
+  closeSandboxSession,
+} from '../services/api'
 import { ApiError } from '../services/api/client'
 
 const SESSION_STORAGE_KEY = 'sandbox-session-key'
@@ -32,6 +37,7 @@ interface SandboxState {
   runQuery: (query: string) => Promise<void>
   restoreSession: () => Promise<void>
   resetSession: () => void
+  closeSession: () => void
   markExpired: () => void
 }
 
@@ -75,7 +81,7 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
     if (!key) return
     try {
       const session = await getSandboxSession(key)
-      if (session.expired) {
+      if (session.status !== 'ACTIVE') {
         sessionStorage.removeItem(SESSION_STORAGE_KEY)
         return
       }
@@ -88,8 +94,16 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
   },
 
   resetSession: () => {
+    const { session } = get()
+    if (session) closeSandboxSession(session.sessionKey)
     sessionStorage.removeItem(SESSION_STORAGE_KEY)
     set({ phase: 'idle', session: null, queryResult: null, setupError: null, queryError: null })
+  },
+
+  closeSession: () => {
+    const { session } = get()
+    if (session) closeSandboxSession(session.sessionKey)
+    sessionStorage.removeItem(SESSION_STORAGE_KEY)
   },
 
   markExpired: () => {

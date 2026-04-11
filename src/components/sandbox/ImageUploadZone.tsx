@@ -110,8 +110,11 @@ export function ImageUploadZone({ onLoginRequired }: ImageUploadZoneProps) {
       </div>
 
       {error && (
-        <div className="bg-status-error/10 border border-status-error/30 rounded p-3">
-          <p className="text-status-error-text text-sm">{error}</p>
+        <div className="border border-border-input rounded-lg p-8 flex flex-col items-center justify-center gap-3 text-center">
+          <svg className="w-8 h-8 text-status-error" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+          <p className="text-text-primary font-medium">{error}</p>
         </div>
       )}
     </div>

@@ -9,16 +9,16 @@ const ERROR_MESSAGES: Record<string, string> = {
   UNSUPPORTED_IMAGE_TYPE: '지원하지 않는 이미지 형식입니다. JPEG, PNG, GIF, WEBP만 가능합니다.',
   FORBIDDEN_SETUP_SQL: '이미지에서 허용되지 않는 SQL이 감지되었습니다.',
   OCR_EXTRACTION_FAILED: '이미지에서 SQL을 추출하지 못했습니다. 더 선명한 이미지를 사용해 주세요.',
-  SANDBOX_SCHEMA_SETUP_FAILED: '샌드박스 설정 중 오류가 발생했습니다.',
+  SANDBOX_SCHEMA_SETUP_FAILED: '죄송합니다. 처리 중 오류가 발생했습니다.',
   SANDBOX_FORBIDDEN: '권한이 없습니다.',
   SANDBOX_SESSION_NOT_FOUND: '세션을 찾을 수 없습니다.',
 }
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
-    return ERROR_MESSAGES[error.code] ?? error.message
+    return ERROR_MESSAGES[error.code] ?? '죄송합니다. 처리 중 오류가 발생했습니다.'
   }
-  return error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
+  return '죄송합니다. 처리 중 오류가 발생했습니다.'
 }
 
 interface SandboxState {

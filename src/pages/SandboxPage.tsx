@@ -24,9 +24,11 @@ export function SandboxPage() {
   const markExpired = useSandboxStore((s) => s.markExpired)
 
   useEffect(() => {
-    if (isLoggedIn) {
-      restoreSession()
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true)
+      return
     }
+    restoreSession()
   }, [isLoggedIn, restoreSession])
 
   const handleExpired = useCallback(() => {
@@ -93,7 +95,10 @@ export function SandboxPage() {
         ) : null}
       </main>
 
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </>
   )
 }

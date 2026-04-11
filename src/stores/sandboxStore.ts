@@ -12,6 +12,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   SANDBOX_SCHEMA_SETUP_FAILED: '샌드박스 설정 중 오류가 발생했습니다.',
   SANDBOX_FORBIDDEN: '권한이 없습니다.',
   SANDBOX_SESSION_NOT_FOUND: '세션을 찾을 수 없습니다.',
+  SANDBOX_SESSION_NOT_ACTIVE: '이미 종료된 세션입니다.',
 }
 
 function getErrorMessage(error: unknown): string {
@@ -63,7 +64,7 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
     } catch (error) {
       if (error instanceof ApiError && error.status === 410) {
         sessionStorage.removeItem(SESSION_STORAGE_KEY)
-        set({ phase: 'idle', session: null, queryError: 'SANDBOX_SESSION_EXPIRED' })
+        set({ phase: 'idle', session: null, queryError: 'SANDBOX_SESSION_NOT_ACTIVE' })
       } else {
         set({ phase: 'ready', queryError: getErrorMessage(error) })
       }
@@ -75,7 +76,7 @@ export const useSandboxStore = create<SandboxState>((set, get) => ({
     if (!key) return
     try {
       const session = await getSandboxSession(key)
-      if (session.expired) {
+      if (session.status !== 'ACTIVE') {
         sessionStorage.removeItem(SESSION_STORAGE_KEY)
         return
       }

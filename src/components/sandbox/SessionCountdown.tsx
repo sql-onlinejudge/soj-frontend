@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import type { SandboxStatus } from '../../types'
 
 interface SessionCountdownProps {
   expiresAt: string
+  status: SandboxStatus
   onExpired: () => void
 }
 
@@ -15,10 +17,14 @@ function formatTime(seconds: number): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-export function SessionCountdown({ expiresAt, onExpired }: SessionCountdownProps) {
+export function SessionCountdown({ expiresAt, status, onExpired }: SessionCountdownProps) {
   const [remaining, setRemaining] = useState(() => getRemainingSeconds(expiresAt))
 
   useEffect(() => {
+    if (status !== 'ACTIVE') {
+      return
+    }
+
     if (remaining === 0) {
       onExpired()
       return
@@ -34,7 +40,16 @@ export function SessionCountdown({ expiresAt, onExpired }: SessionCountdownProps
     }, 1000)
 
     return () => clearInterval(id)
-  }, [expiresAt, onExpired, remaining])
+  }, [expiresAt, onExpired, remaining, status])
+
+  if (status !== 'ACTIVE') {
+    const statusText = status === 'CLOSED' ? '종료됨' : '만료됨'
+    return (
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-surface-muted text-text-muted" style={{ fontFamily: 'JetBrains Mono' }}>
+        {statusText}
+      </div>
+    )
+  }
 
   const isWarning = remaining <= 600 && remaining > 60
   const isDanger = remaining <= 60

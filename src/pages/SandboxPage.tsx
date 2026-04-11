@@ -66,7 +66,7 @@ export function SandboxPage() {
                 <SetupResult session={session} collapsed />
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <SessionCountdown expiresAt={session.expiresAt} onExpired={handleExpired} />
+                <SessionCountdown expiresAt={session.expiresAt} status={session.status} onExpired={handleExpired} />
                 <button
                   onClick={resetSession}
                   className="text-xs text-text-muted hover:text-text-secondary transition-colors"

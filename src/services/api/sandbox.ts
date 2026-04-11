@@ -46,3 +46,13 @@ export async function querySandbox(
 export async function getSandboxSession(sessionKey: string): Promise<SandboxSession> {
   return fetchApi<SandboxSession>(`/runs/sandbox/${sessionKey}`)
 }
+
+export async function listSandboxSessions(): Promise<SandboxSession[]> {
+  return fetchApi<SandboxSession[]>('/runs/sandbox')
+}
+
+export async function closeSandboxSession(sessionKey: string): Promise<void> {
+  return fetchApi<void>(`/runs/sandbox/${sessionKey}`, {
+    method: 'DELETE',
+  })
+}

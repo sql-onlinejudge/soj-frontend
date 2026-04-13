@@ -6,6 +6,7 @@ export interface GetProblemsParams {
   minDifficulty?: number
   maxDifficulty?: number
   trialStatus?: string
+  category?: string
   page?: number
   size?: number
   sort?: string[]
@@ -21,6 +22,7 @@ export async function getProblems(
   if (params.maxDifficulty !== undefined)
     searchParams.set('maxDifficulty', String(params.maxDifficulty))
   if (params.trialStatus) searchParams.set('trialStatus', params.trialStatus)
+  if (params.category) searchParams.set('category', params.category)
   if (params.page !== undefined) searchParams.set('page', String(params.page))
   if (params.size !== undefined) searchParams.set('size', String(params.size))
   if (params.sort) {

@@ -10,8 +10,10 @@ type SortMode = 'latest' | 'popular'
 export function HomePage() {
   const navigate = useNavigate()
   const [problems, setProblems] = useState<ProblemListItem[]>([])
+  const [ormProblems, setOrmProblems] = useState<ProblemListItem[]>([])
   const [workbooks, setWorkbooks] = useState<Workbook[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isOrmLoading, setIsOrmLoading] = useState(true)
   const [sortMode, setSortMode] = useState<SortMode>('latest')
   const [keyword, setKeyword] = useState('')
   const [stats, setStats] = useState({ problems: 0, submissions: 0, users: 0 })
@@ -42,6 +44,14 @@ export function HomePage() {
     getWorkbooks({ size: 5 })
       .then((res) => setWorkbooks(res.content))
       .catch(() => console.error('Failed to fetch workbooks'))
+  }, [])
+
+  useEffect(() => {
+    setIsOrmLoading(true)
+    getProblems({ size: 5, category: 'ORM', sort: ['id:desc'] })
+      .then((res) => setOrmProblems(res.content))
+      .catch(() => {})
+      .finally(() => setIsOrmLoading(false))
   }, [])
 
   const handleSearch = (e: React.FormEvent) => {
@@ -125,6 +135,18 @@ export function HomePage() {
           </div>
 
           <ProblemList problems={problems} isLoading={isLoading} />
+
+          <div className="flex items-center gap-3">
+            <h2 className="text-base font-semibold text-text-primary">ORM 문제</h2>
+            <Link to="/problems?category=ORM" className="flex items-center gap-1 text-[13px] text-text-muted hover:text-text-secondary transition-colors ml-auto whitespace-nowrap">
+              더보기
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+
+          <ProblemList problems={ormProblems} isLoading={isOrmLoading} />
         </section>
 
         <aside className="w-[380px] shrink-0 hidden lg:flex flex-col gap-4">
@@ -158,6 +180,26 @@ export function HomePage() {
               ))
             )}
           </div>
+
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-semibold text-text-primary">OCR 샌드박스</h2>
+            <Link to="/sandbox" className="flex items-center gap-1 text-[13px] text-text-muted hover:text-text-secondary transition-colors">
+              바로가기
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+          <Link
+            to="/sandbox"
+            className="p-4 px-5 rounded-lg bg-surface-panel border border-border-input hover:bg-surface-muted transition-colors flex flex-col gap-2"
+          >
+            <span className="text-sm font-semibold text-text-primary">이미지로 DB 세팅</span>
+            <span className="text-xs text-text-secondary leading-relaxed">
+              ERD 또는 테이블 구조 이미지를 업로드하면 샌드박스 DB가 세팅됩니다.
+            </span>
+            <span className="text-xs text-brand-primary font-medium">이미지 업로드 →</span>
+          </Link>
         </aside>
       </div>
     </div>

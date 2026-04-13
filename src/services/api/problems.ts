@@ -1,12 +1,12 @@
 import { fetchApi } from './client'
-import type { PaginatedResponse, ProblemDetail, ProblemListItem, Testcase, RecommendationResponse, RecommendationTrigger } from '../../types'
+import type { PaginatedResponse, ProblemDetail, ProblemListItem, Testcase, RecommendationResponse, RecommendationTrigger, ProblemCategory } from '../../types'
 
 export interface GetProblemsParams {
   keyword?: string
   minDifficulty?: number
   maxDifficulty?: number
   trialStatus?: string
-  category?: string
+  category?: ProblemCategory
   page?: number
   size?: number
   sort?: string[]

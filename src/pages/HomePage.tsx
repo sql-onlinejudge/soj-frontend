@@ -4,6 +4,9 @@ import { getProblems, getWorkbooks, getStats } from '../services/api'
 import type { ProblemListItem, Workbook } from '../types'
 import { DifficultyBadge } from '../components/badges/DifficultyBadge'
 import { ProblemList } from '../components/problem/ProblemList'
+import { ImageUploadZone } from '../components/sandbox/ImageUploadZone'
+import { useSandboxStore } from '../stores/sandboxStore'
+import { LoginModal } from '../components/common/LoginModal'
 
 type SortMode = 'latest' | 'popular'
 
@@ -17,6 +20,13 @@ export function HomePage() {
   const [sortMode, setSortMode] = useState<SortMode>('latest')
   const [keyword, setKeyword] = useState('')
   const [stats, setStats] = useState({ problems: 0, submissions: 0, users: 0 })
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+
+  const sandboxPhase = useSandboxStore((s) => s.phase)
+
+  useEffect(() => {
+    if (sandboxPhase === 'ready') navigate('/sandbox')
+  }, [sandboxPhase, navigate])
 
   useEffect(() => {
     getStats()
@@ -29,7 +39,7 @@ export function HomePage() {
       setIsLoading(true)
       try {
         const sort = sortMode === 'latest' ? ['id:desc'] : ['submittedCount:desc']
-        const response = await getProblems({ size: 7, sort })
+        const response = await getProblems({ size: 7, sort, category: 'SQL' })
         setProblems(response.content)
       } catch {
         console.error('Failed to fetch problems')
@@ -182,7 +192,7 @@ export function HomePage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-text-primary">OCR 샌드박스</h2>
+            <h2 className="text-base font-semibold text-text-primary">자격증 문제풀이</h2>
             <Link to="/sandbox" className="flex items-center gap-1 text-[13px] text-text-muted hover:text-text-secondary transition-colors">
               바로가기
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -190,18 +200,14 @@ export function HomePage() {
               </svg>
             </Link>
           </div>
-          <Link
-            to="/sandbox"
-            className="p-4 px-5 rounded-lg bg-surface-panel border border-border-input hover:bg-surface-muted transition-colors flex flex-col gap-2"
-          >
-            <span className="text-sm font-semibold text-text-primary">이미지로 DB 세팅</span>
-            <span className="text-xs text-text-secondary leading-relaxed">
-              ERD 또는 테이블 구조 이미지를 업로드하면 샌드박스 DB가 세팅됩니다.
-            </span>
-            <span className="text-xs text-brand-primary font-medium">이미지 업로드 →</span>
-          </Link>
+          <ImageUploadZone onLoginRequired={() => setIsLoginModalOpen(true)} />
         </aside>
       </div>
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </div>
   )
 }

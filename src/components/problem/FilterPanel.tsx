@@ -1,3 +1,5 @@
+import type { ProblemCategory } from '../../types'
+
 export interface SortItem {
   field: string
   direction: 'asc' | 'desc'
@@ -9,6 +11,8 @@ interface FilterPanelProps {
   onDifficultyChange: (min: number, max: number) => void
   trialStatus: string | null
   onTrialStatusChange: (status: string | null) => void
+  category: ProblemCategory | null
+  onCategoryChange: (category: ProblemCategory | null) => void
   sorts: SortItem[]
   onSortsChange: (sorts: SortItem[]) => void
 }
@@ -18,6 +22,12 @@ const trialStatusOptions = [
   { value: 'SOLVED', label: '해결' },
   { value: 'ATTEMPTED', label: '미해결' },
   { value: 'NOT_ATTEMPTED', label: '미시도' },
+] as const
+
+const categoryOptions = [
+  { value: null, label: '전체' },
+  { value: 'SQL' as ProblemCategory, label: 'SQL' },
+  { value: 'ORM' as ProblemCategory, label: 'ORM' },
 ] as const
 
 const sortOptions = [
@@ -33,6 +43,8 @@ export function FilterPanel({
   onDifficultyChange,
   trialStatus,
   onTrialStatusChange,
+  category,
+  onCategoryChange,
   sorts,
   onSortsChange,
 }: FilterPanelProps) {
@@ -93,6 +105,30 @@ export function FilterPanel({
           {[1, 5, 10, 15, 20].map((level) => (
             <span key={level}>{level}</span>
           ))}
+        </div>
+      </div>
+
+      <div className="border-t border-border-input my-4" />
+
+      <div className="mb-4">
+        <label className="text-sm text-text-secondary">카테고리</label>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {categoryOptions.map((option) => {
+            const isActive = category === option.value
+            return (
+              <button
+                key={option.label}
+                onClick={() => onCategoryChange(option.value)}
+                className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                  isActive
+                    ? 'bg-brand-primary text-white'
+                    : 'bg-surface-muted text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                {option.label}
+              </button>
+            )
+          })}
         </div>
       </div>
 

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useDebounce } from '../hooks/useDebounce'
 import { getProblems } from '../services/api'
-import type { PaginatedResponse, ProblemListItem } from '../types'
+import type { PaginatedResponse, ProblemListItem, ProblemCategory } from '../types'
 import { SearchInput } from '../components/problem/SearchInput'
 import { FilterPanel, type SortItem } from '../components/problem/FilterPanel'
 import { ProblemList } from '../components/problem/ProblemList'
@@ -29,11 +29,13 @@ export function ProblemsPage() {
   const initialMaxDiff = Number(searchParams.get('maxDiff')) || 20
   const initialSorts = parseSortsFromUrl(searchParams.get('sort'))
   const initialTrialStatus = searchParams.get('status') || null
+  const initialCategory = (searchParams.get('category') as ProblemCategory) || null
 
   const [keyword, setKeyword] = useState(initialKeyword)
   const [minDifficulty, setMinDifficulty] = useState(initialMinDiff)
   const [maxDifficulty, setMaxDifficulty] = useState(initialMaxDiff)
   const [trialStatus, setTrialStatus] = useState<string | null>(initialTrialStatus)
+  const [category, setCategory] = useState<ProblemCategory | null>(initialCategory)
   const [sorts, setSorts] = useState<SortItem[]>(initialSorts)
   const [page, setPage] = useState(initialPage)
   const [data, setData] = useState<PaginatedResponse<ProblemListItem> | null>(null)
@@ -48,10 +50,11 @@ export function ProblemsPage() {
     if (minDifficulty > 1) params.set('minDiff', String(minDifficulty))
     if (maxDifficulty < 20) params.set('maxDiff', String(maxDifficulty))
     if (trialStatus) params.set('status', trialStatus)
+    if (category) params.set('category', category)
     const defaultSort = sorts.length === 1 && sorts[0].field === 'id' && sorts[0].direction === 'asc'
     if (!defaultSort) params.set('sort', sortsToUrl(sorts))
     setSearchParams(params, { replace: true })
-  }, [debouncedKeyword, page, minDifficulty, maxDifficulty, trialStatus, sorts, setSearchParams])
+  }, [debouncedKeyword, page, minDifficulty, maxDifficulty, trialStatus, category, sorts, setSearchParams])
 
   useEffect(() => {
     updateUrl()
@@ -59,7 +62,7 @@ export function ProblemsPage() {
 
   useEffect(() => {
     setPage(0)
-  }, [debouncedKeyword, minDifficulty, maxDifficulty, trialStatus, sorts])
+  }, [debouncedKeyword, minDifficulty, maxDifficulty, trialStatus, category, sorts])
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -73,6 +76,7 @@ export function ProblemsPage() {
           minDifficulty,
           maxDifficulty,
           trialStatus: trialStatus || undefined,
+          category: category || undefined,
           page,
           size: 14,
           sort: sortParams,
@@ -86,7 +90,7 @@ export function ProblemsPage() {
     }
 
     fetchProblems()
-  }, [debouncedKeyword, minDifficulty, maxDifficulty, trialStatus, sorts, page])
+  }, [debouncedKeyword, minDifficulty, maxDifficulty, trialStatus, category, sorts, page])
 
   return (
     <div className="min-h-screen bg-surface-bg">
@@ -106,6 +110,8 @@ export function ProblemsPage() {
               }}
               trialStatus={trialStatus}
               onTrialStatusChange={setTrialStatus}
+              category={category}
+              onCategoryChange={setCategory}
               sorts={sorts}
               onSortsChange={setSorts}
             />

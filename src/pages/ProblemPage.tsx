@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useParams, useNavigate, useBlocker } from 'react-router-dom'
+import { useParams, useNavigate, useBlocker, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Allotment } from 'allotment'
 import 'allotment/dist/style.css'
@@ -45,6 +45,8 @@ import { NotFoundPage } from './NotFoundPage'
 export function ProblemPage() {
   const { problemId } = useParams<{ problemId: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
+  const backUrl = (location.state as { from?: string } | null)?.from ?? '/problems'
   const { subscribeSubmission } = useSubmissionStore()
   const { isLoggedIn } = useAuthStore()
 
@@ -393,7 +395,7 @@ export function ProblemPage() {
           <Allotment.Pane preferredSize={570} minSize={300} maxSize={1000}>
             <div className="h-full flex flex-col overflow-hidden bg-surface-panel">
               <div className="p-4 border-b border-border-input">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/problems')}>
+                <Button variant="ghost" size="sm" onClick={() => navigate(backUrl)}>
                   <span className="mr-1">←</span> 목록으로
                 </Button>
               </div>
@@ -457,7 +459,7 @@ export function ProblemPage() {
 
       <div className="lg:hidden min-h-[calc(100vh-3.5rem)] flex flex-col">
         <div className="p-4 border-b border-border-input bg-surface-panel">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/problems')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(backUrl)}>
             <span className="mr-1">←</span> 목록으로
           </Button>
         </div>

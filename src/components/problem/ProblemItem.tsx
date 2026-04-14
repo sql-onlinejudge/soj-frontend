@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import type { ProblemListItem } from '../../types'
 import { formatNumber } from '../../utils/formatters'
 import { DifficultyBadge } from '../badges/DifficultyBadge'
@@ -10,9 +10,11 @@ interface ProblemItemProps {
 }
 
 export function ProblemItem({ problem }: ProblemItemProps) {
+  const location = useLocation()
   return (
     <Link
       to={`/problems/${problem.id}`}
+      state={{ from: location.pathname + location.search }}
       className="group flex items-center justify-between px-4 py-3 bg-surface-panel border-b border-border-input hover:bg-surface-muted transition-colors"
     >
       <div className="flex items-center gap-3 min-w-0">

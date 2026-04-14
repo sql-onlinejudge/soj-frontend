@@ -68,7 +68,7 @@ export function SandboxHistory({ currentSessionKey, onLoad, onReactivate }: Sand
                 key={s.sessionKey}
                 className={`border-b border-border-input/50 last:border-0 ${s.sessionKey === currentSessionKey ? 'bg-brand-primary/5' : ''}`}
               >
-                <td className="px-4 py-3 font-mono text-xs text-text-light">{s.schemaName}</td>
+                <td className="px-4 py-3 font-mono text-xs text-text-primary">{s.schemaName}</td>
                 <td className="px-4 py-3 text-text-secondary text-xs">{formatRelativeTime(s.createdAt)}</td>
                 <td className="px-4 py-3 text-text-secondary text-xs">{formatRelativeTime(s.expiresAt)}</td>
                 <td className="px-4 py-3">

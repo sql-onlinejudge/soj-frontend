@@ -9,8 +9,14 @@ import { SandboxQueryResult } from '../components/sandbox/SandboxQueryResult'
 import { SandboxHistory } from '../components/sandbox/SandboxHistory'
 
 export function SandboxPage() {
+  const QUERY_STORAGE_KEY = 'sandbox-query'
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
-  const [query, setQuery] = useState('SELECT ')
+  const [query, setQuery] = useState(() => sessionStorage.getItem(QUERY_STORAGE_KEY) ?? 'SELECT ')
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value)
+    sessionStorage.setItem(QUERY_STORAGE_KEY, value)
+  }
 
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
   const phase = useSandboxStore((s) => s.phase)
@@ -81,7 +87,7 @@ export function SandboxPage() {
 
             <SandboxEditor
               value={query}
-              onChange={setQuery}
+              onChange={handleQueryChange}
               onRun={handleRun}
               isRunning={isQuerying}
               disabled={!isReady && !isQuerying}

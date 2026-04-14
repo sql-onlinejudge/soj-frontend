@@ -85,8 +85,14 @@ export function ProblemPage() {
     return () => clearTimeout(timer)
   }, [])
 
+  const handleCodeChange = (value: string) => {
+    setCode(value)
+    sessionStorage.setItem(`problem-code-${problemId}`, value)
+  }
+
   useEffect(() => {
-    setCode('SELECT ')
+    const stored = sessionStorage.getItem(`problem-code-${problemId}`)
+    setCode(stored ?? 'SELECT ')
     setCurrentStatus(null)
     setCurrentVerdict(null)
     setCurrentQuery('')
@@ -402,7 +408,7 @@ export function ProblemPage() {
               <Allotment.Pane preferredSize="55%" minSize={100}>
                 <CodeEditor
                   value={code}
-                  onChange={setCode}
+                  onChange={handleCodeChange}
                   onSubmit={handleSubmit}
                   onRun={handleRun}
                   isSubmitting={isSubmitting}

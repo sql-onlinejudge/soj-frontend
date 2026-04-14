@@ -1,9 +1,11 @@
 import Markdown from 'react-markdown'
+import Editor from '@monaco-editor/react'
 import type { AnswerMetadata, ColumnMetadata, InitMetadata, ProblemDetail, Testcase } from '../../types'
 import { formatNumber } from '../../utils/formatters'
 import { DifficultyBadge } from '../badges/DifficultyBadge'
 import { StatusBadge } from '../badges/StatusBadge'
 import { CategoryBadge } from '../badges/CategoryBadge'
+import { useUIStore } from '../../stores/uiStore'
 
 interface ProblemDescriptionProps {
   problem: ProblemDetail
@@ -104,22 +106,44 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: Colum
 }
 
 function OrmCodeSection({ entityCode, repositoryCode }: { entityCode: string; repositoryCode: string }) {
+  const themePreference = useUIStore((s) => s.themePreference)
+  const isDark = themePreference === 'dark'
+
+  const editorOptions = {
+    readOnly: true,
+    minimap: { enabled: false },
+    fontSize: 13,
+    lineNumbers: 'on' as const,
+    scrollBeyondLastLine: false,
+    wordWrap: 'on' as const,
+    padding: { top: 8, bottom: 8 },
+    scrollbar: { vertical: 'hidden' as const },
+  }
+
   return (
     <div className="space-y-4">
       <div>
         <p className="text-sm font-medium text-text-primary mb-2">Entity</p>
-        <div className="bg-surface-panel border border-border-light rounded p-4 overflow-x-auto">
-          <pre className="text-sm font-mono text-text-primary whitespace-pre-wrap">
-            {entityCode}
-          </pre>
+        <div className="border border-border-light rounded overflow-hidden" style={{ height: '240px' }}>
+          <Editor
+            height="100%"
+            defaultLanguage="java"
+            value={entityCode}
+            theme={isDark ? 'vs-dark' : 'light'}
+            options={editorOptions}
+          />
         </div>
       </div>
       <div>
         <p className="text-sm font-medium text-text-primary mb-2">Repository</p>
-        <div className="bg-surface-panel border border-border-light rounded p-4 overflow-x-auto">
-          <pre className="text-sm font-mono text-text-primary whitespace-pre-wrap">
-            {repositoryCode}
-          </pre>
+        <div className="border border-border-light rounded overflow-hidden" style={{ height: '160px' }}>
+          <Editor
+            height="100%"
+            defaultLanguage="java"
+            value={repositoryCode}
+            theme={isDark ? 'vs-dark' : 'light'}
+            options={editorOptions}
+          />
         </div>
       </div>
     </div>

@@ -103,6 +103,29 @@ function SchemaTable({ tableName, columns }: { tableName: string; columns: Colum
   )
 }
 
+function OrmCodeSection({ entityCode, repositoryCode }: { entityCode: string; repositoryCode: string }) {
+  return (
+    <div className="space-y-4">
+      <div>
+        <p className="text-sm font-medium text-text-primary mb-2">Entity</p>
+        <div className="bg-surface-panel border border-border-light rounded p-4 overflow-x-auto">
+          <pre className="text-sm font-mono text-text-primary whitespace-pre-wrap">
+            {entityCode}
+          </pre>
+        </div>
+      </div>
+      <div>
+        <p className="text-sm font-medium text-text-primary mb-2">Repository</p>
+        <div className="bg-surface-panel border border-border-light rounded p-4 overflow-x-auto">
+          <pre className="text-sm font-mono text-text-primary whitespace-pre-wrap">
+            {repositoryCode}
+          </pre>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function TestcaseTable({ testcase, index }: { testcase: Testcase; index: number }) {
   return (
     <div className="mb-6">
@@ -153,8 +176,15 @@ export function ProblemDescription({ problem, testcases }: ProblemDescriptionPro
         </section>
 
         <section className="mb-6">
-          <h2 className="text-base font-bold text-text-primary mb-2">테이블 스키마</h2>
-          {problem.schemaMetadata ? (
+          <h2 className="text-base font-bold text-text-primary mb-2">
+            {problem.category === 'ORM' ? 'Entity & Repository' : '테이블 스키마'}
+          </h2>
+          {problem.category === 'ORM' && problem.ormMetadata ? (
+            <OrmCodeSection
+              entityCode={problem.ormMetadata.entityCode}
+              repositoryCode={problem.ormMetadata.repositoryCode}
+            />
+          ) : problem.schemaMetadata ? (
             problem.schemaMetadata.tables.map((table, idx) => (
               <SchemaTable key={idx} tableName={table.name} columns={table.columns} />
             ))

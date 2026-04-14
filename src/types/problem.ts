@@ -17,6 +17,11 @@ export interface SchemaMetadata {
   tables: TableMetadata[]
 }
 
+export interface OrmMetadata {
+  entityCode: string
+  repositoryCode: string
+}
+
 export interface InsertStatement {
   table: string
   rows: Record<string, unknown>[]
@@ -49,6 +54,7 @@ export interface ProblemDetail {
   description: string
   schemaSql: string
   schemaMetadata: SchemaMetadata | null
+  ormMetadata: OrmMetadata | null
   difficulty: number
   timeLimit: number
   isOrderSensitive: boolean

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
+import { trackEvent } from '../services/api/events'
 
 const RETURN_KEY = 'soj-login-return'
 
@@ -10,6 +11,7 @@ export function OAuthCallbackPage() {
 
   useEffect(() => {
     login()
+    trackEvent({ eventType: 'LOGIN' })
     const returnTo = sessionStorage.getItem(RETURN_KEY) || '/'
     sessionStorage.removeItem(RETURN_KEY)
     navigate(returnTo, { replace: true })

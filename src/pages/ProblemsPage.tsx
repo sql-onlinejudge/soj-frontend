@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useDebounce } from '../hooks/useDebounce'
 import { getProblems } from '../services/api'
+import { trackEvent } from '../services/api/events'
 import type { PaginatedResponse, ProblemListItem } from '../types'
 import { SearchInput } from '../components/problem/SearchInput'
 import { FilterPanel, type SortItem } from '../components/problem/FilterPanel'
@@ -60,6 +61,12 @@ export function ProblemsPage() {
   useEffect(() => {
     setPage(0)
   }, [debouncedKeyword, minDifficulty, maxDifficulty, trialStatus, sorts])
+
+  useEffect(() => {
+    if (debouncedKeyword) {
+      trackEvent({ eventType: 'SEARCH', metadata: { query: debouncedKeyword } })
+    }
+  }, [debouncedKeyword])
 
   useEffect(() => {
     const fetchProblems = async () => {

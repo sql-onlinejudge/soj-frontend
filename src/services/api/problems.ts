@@ -60,7 +60,3 @@ export async function getRecommendations(
     `/problems/${problemId}/recommendations?${params.toString()}`
   )
 }
-
-export async function getOnboardingProblems(): Promise<ProblemListItem[]> {
-  return fetchApi<ProblemListItem[]>('/problems/onboarding')
-}

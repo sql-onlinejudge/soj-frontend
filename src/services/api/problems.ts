@@ -46,6 +46,10 @@ export async function getTestcases(problemId: number, isVisible?: boolean): Prom
   return fetchApi<Testcase[]>(`/problems/${problemId}/testcases${query ? `?${query}` : ''}`)
 }
 
+export async function getOnboardingProblems(): Promise<ProblemListItem[]> {
+  return fetchApi<ProblemListItem[]>('/problems/onboarding')
+}
+
 export async function getRecommendations(
   problemId: number,
   trigger: RecommendationTrigger

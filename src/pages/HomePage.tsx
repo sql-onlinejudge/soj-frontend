@@ -1,21 +1,24 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { getProblems, getWorkbooks, getStats } from '../services/api'
+import { getProblems, getWorkbooks, getStats, getOnboardingProblems } from '../services/api'
 import type { ProblemListItem, Workbook } from '../types'
 import { DifficultyBadge } from '../components/badges/DifficultyBadge'
 import { ProblemList } from '../components/problem/ProblemList'
 import { ImageUploadZone } from '../components/sandbox/ImageUploadZone'
 import { useSandboxStore } from '../stores/sandboxStore'
 import { LoginModal } from '../components/common/LoginModal'
+import { useAuthStore } from '../stores/authStore'
 
 type SortMode = 'latest' | 'popular'
 
 export function HomePage() {
   const navigate = useNavigate()
   const [problems, setProblems] = useState<ProblemListItem[]>([])
+  const [onboardingProblems, setOnboardingProblems] = useState<ProblemListItem[]>([])
   const [ormProblems, setOrmProblems] = useState<ProblemListItem[]>([])
   const [workbooks, setWorkbooks] = useState<Workbook[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isOnboardingLoading, setIsOnboardingLoading] = useState(true)
   const [isOrmLoading, setIsOrmLoading] = useState(true)
   const [sortMode, setSortMode] = useState<SortMode>('latest')
   const [keyword, setKeyword] = useState('')
@@ -23,6 +26,7 @@ export function HomePage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const sandboxPhase = useSandboxStore((s) => s.phase)
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
 
   useEffect(() => {
     if (sandboxPhase === 'ready') navigate('/sandbox')
@@ -49,6 +53,16 @@ export function HomePage() {
     }
     fetchProblems()
   }, [sortMode])
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setIsOnboardingLoading(true)
+      getOnboardingProblems()
+        .then((data) => setOnboardingProblems(data))
+        .catch(() => {})
+        .finally(() => setIsOnboardingLoading(false))
+    }
+  }, [isLoggedIn])
 
   useEffect(() => {
     getWorkbooks({ size: 5 })
@@ -99,6 +113,15 @@ export function HomePage() {
 
       <div className="max-w-[1400px] mx-auto px-10 py-8 flex gap-6">
         <section className="flex-1 min-w-0 flex flex-col gap-4">
+          {isLoggedIn && onboardingProblems.length > 0 && (
+            <>
+              <div className="flex items-center gap-3">
+                <h2 className="text-base font-semibold text-text-primary">시작하기 좋은 문제</h2>
+              </div>
+              <ProblemList problems={onboardingProblems} isLoading={isOnboardingLoading} />
+            </>
+          )}
+
           <div className="flex items-center gap-3">
             <form onSubmit={handleSearch} className="flex-1">
               <div className="relative">

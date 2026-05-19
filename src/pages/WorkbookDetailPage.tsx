@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getWorkbook, getWorkbookProblems } from '../services/api'
+import { ApiError } from '../services/api/client'
 import type { Workbook, PaginatedResponse, ProblemListItem } from '../types'
 import { DifficultyBadge } from '../components/badges/DifficultyBadge'
 import { ProblemList } from '../components/problem/ProblemList'
 import { Pagination } from '../components/common/Pagination'
+import { PremiumRequiredModal } from '../components/premium/PremiumRequiredModal'
 import { formatRelativeTime } from '../utils/formatters'
 
 export function WorkbookDetailPage() {
@@ -15,6 +17,7 @@ export function WorkbookDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isProblemsLoading, setIsProblemsLoading] = useState(false)
   const [notFound, setNotFound] = useState(false)
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false)
 
   useEffect(() => {
     const id = Number(workbookId)
@@ -33,8 +36,12 @@ export function WorkbookDetailPage() {
         ])
         setWorkbook(wb)
         setProblemsData(problems)
-      } catch {
-        setNotFound(true)
+      } catch (e) {
+        if (e instanceof ApiError && e.code === 'PREMIUM_REQUIRED') {
+          setIsPremiumModalOpen(true)
+        } else {
+          setNotFound(true)
+        }
       } finally {
         setIsLoading(false)
       }
@@ -66,6 +73,20 @@ export function WorkbookDetailPage() {
     return (
       <div className="min-h-screen bg-surface-bg flex items-center justify-center">
         <span className="text-text-secondary">로딩 중...</span>
+      </div>
+    )
+  }
+
+  if (isPremiumModalOpen) {
+    return (
+      <div className="min-h-screen bg-surface-bg">
+        <PremiumRequiredModal
+          isOpen={isPremiumModalOpen}
+          onClose={() => {
+            setIsPremiumModalOpen(false)
+            window.history.back()
+          }}
+        />
       </div>
     )
   }

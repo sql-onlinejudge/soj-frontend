@@ -1,14 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { useDebounce } from '../hooks/useDebounce'
 import { getWorkbooks } from '../services/api'
 import type { PaginatedResponse, Workbook } from '../types'
 import { SearchInput } from '../components/problem/SearchInput'
 import { Pagination } from '../components/common/Pagination'
 import { DifficultyBadge } from '../components/badges/DifficultyBadge'
+import { LockBadge } from '../components/premium/LockBadge'
 import { formatRelativeTime } from '../utils/formatters'
+import { useSubscriptionStore } from '../stores/subscriptionStore'
 
 export function WorkbooksPage() {
+  const navigate = useNavigate()
+  const isPremium = useSubscriptionStore((s) => s.isPremium)
   const [searchParams, setSearchParams] = useSearchParams()
 
   const initialKeyword = searchParams.get('q') || ''
@@ -77,20 +81,32 @@ export function WorkbooksPage() {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {data.content.map((wb) => (
-                <Link
-                  key={wb.id}
-                  to={`/workbooks/${wb.id}`}
-                  className="p-5 rounded-lg bg-surface-panel border border-border-input hover:bg-surface-muted transition-colors flex flex-col gap-3"
-                >
-                  <span className="text-base font-semibold text-text-primary">{wb.name}</span>
-                  <span className="text-xs text-text-secondary leading-relaxed line-clamp-2">{wb.description}</span>
-                  <div className="flex items-center justify-between mt-auto pt-2">
-                    <DifficultyBadge level={wb.difficulty} />
-                    <span className="text-[11px] text-text-muted">{formatRelativeTime(wb.createdAt)}</span>
+              {data.content.map((wb) => {
+                const locked = wb.premium && !isPremium
+                const card = (
+                  <div className="p-5 rounded-lg bg-surface-panel border border-border-input hover:bg-surface-muted transition-colors flex flex-col gap-3 h-full">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-base font-semibold text-text-primary">{wb.name}</span>
+                      {locked && <LockBadge onClick={() => navigate('/pricing')} />}
+                    </div>
+                    <span className="text-xs text-text-secondary leading-relaxed line-clamp-2">{wb.description}</span>
+                    <div className="flex items-center justify-between mt-auto pt-2">
+                      <DifficultyBadge level={wb.difficulty} />
+                      <span className="text-[11px] text-text-muted">{formatRelativeTime(wb.createdAt)}</span>
+                    </div>
                   </div>
-                </Link>
-              ))}
+                )
+
+                return locked ? (
+                  <div key={wb.id} className="cursor-pointer" onClick={() => navigate('/pricing')}>
+                    {card}
+                  </div>
+                ) : (
+                  <Link key={wb.id} to={`/workbooks/${wb.id}`}>
+                    {card}
+                  </Link>
+                )
+              })}
             </div>
 
             <Pagination

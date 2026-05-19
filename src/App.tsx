@@ -10,14 +10,23 @@ import { WorkbookDetailPage } from './pages/WorkbookDetailPage'
 import { OAuthCallbackPage } from './pages/OAuthCallbackPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { SandboxPage } from './pages/SandboxPage'
+import { PricingPage } from './pages/PricingPage'
 import { useUIStore, applyTheme } from './stores/uiStore'
+import { useAuthStore } from './stores/authStore'
+import { useSubscriptionStore } from './stores/subscriptionStore'
 
 function Layout() {
   const themePreference = useUIStore((s) => s.themePreference)
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
+  const fetchSubscription = useSubscriptionStore((s) => s.fetch)
 
   useEffect(() => {
     applyTheme(themePreference)
   }, [themePreference])
+
+  useEffect(() => {
+    if (isLoggedIn) fetchSubscription()
+  }, [isLoggedIn, fetchSubscription])
 
   return (
     <div className="min-h-screen bg-surface-bg transition-colors">
@@ -48,6 +57,7 @@ const router = createBrowserRouter([
       { path: '/workbooks', element: <WorkbooksPage /> },
       { path: '/workbooks/:workbookId', element: <WorkbookDetailPage /> },
       { path: '/sandbox', element: <SandboxPage /> },
+      { path: '/pricing', element: <PricingPage /> },
       { path: '/oauth/callback', element: <OAuthCallbackPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import { getProblems, getWorkbooks, getStats, getOnboardingProblems } from '../services/api'
 import type { ProblemListItem, Workbook } from '../types'
 import { DifficultyBadge } from '../components/badges/DifficultyBadge'
@@ -7,12 +8,14 @@ import { CategoryBadge } from '../components/badges/CategoryBadge'
 import { ProblemList } from '../components/problem/ProblemList'
 import { ImageUploadZone } from '../components/sandbox/ImageUploadZone'
 import { useSandboxStore } from '../stores/sandboxStore'
+import { useSubscriptionStore } from '../stores/subscriptionStore'
 import { LoginModal } from '../components/common/LoginModal'
 
 type SortMode = 'latest' | 'popular'
 
 export function HomePage() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [problems, setProblems] = useState<ProblemListItem[]>([])
   const [onboardingProblems, setOnboardingProblems] = useState<ProblemListItem[]>([])
   const [ormProblems, setOrmProblems] = useState<ProblemListItem[]>([])
@@ -26,10 +29,25 @@ export function HomePage() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const sandboxPhase = useSandboxStore((s) => s.phase)
+  const invalidateSubscription = useSubscriptionStore((s) => s.invalidate)
 
   useEffect(() => {
     if (sandboxPhase === 'ready') navigate('/sandbox')
   }, [sandboxPhase, navigate])
+
+  useEffect(() => {
+    const result = searchParams.get('payment')
+    if (!result) return
+    if (result === 'success') {
+      toast.success('구독이 완료되었습니다!')
+      invalidateSubscription()
+    } else if (result === 'fail') {
+      toast.error('결제에 실패했습니다. 다시 시도해주세요.')
+    }
+    const next = new URLSearchParams(searchParams)
+    next.delete('payment')
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams, invalidateSubscription])
 
   useEffect(() => {
     getOnboardingProblems()

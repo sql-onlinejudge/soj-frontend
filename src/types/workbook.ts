@@ -3,5 +3,6 @@ export interface Workbook {
   name: string
   description: string
   difficulty: number
+  premium: boolean
   createdAt: string
 }

@@ -18,6 +18,7 @@ import {
 } from '../services/api'
 import { useSubmissionStore } from '../stores/submissionStore'
 import { useAuthStore } from '../stores/authStore'
+import { useSubscriptionStore } from '../stores/subscriptionStore'
 import type {
   ProblemDetail,
   Testcase,
@@ -49,6 +50,7 @@ export function ProblemPage() {
   const backUrl = (location.state as { from?: string } | null)?.from ?? '/problems'
   const { subscribeSubmission } = useSubmissionStore()
   const { isLoggedIn } = useAuthStore()
+  const isPremium = useSubscriptionStore((s) => s.isPremium)
 
   const [problem, setProblem] = useState<ProblemDetail | null>(null)
   const [testcases, setTestcases] = useState<Testcase[]>([])
@@ -433,6 +435,9 @@ export function ProblemPage() {
                           status={currentStatus}
                           verdict={currentVerdict}
                           query={currentQuery}
+                          problemId={Number(problemId)}
+                          submissionId={currentSubmissionId}
+                          isPremiumUser={isPremium}
                         />
                       )
                     }
@@ -491,6 +496,9 @@ export function ProblemPage() {
                     status={currentStatus}
                     verdict={currentVerdict}
                     query={currentQuery}
+                    problemId={Number(problemId)}
+                    submissionId={currentSubmissionId}
+                    isPremiumUser={isPremium}
                   />
                 )
               }

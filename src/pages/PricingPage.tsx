@@ -51,7 +51,7 @@ export function PricingPage() {
 
         <div className="rounded-xl border border-brand-primary/40 bg-surface-panel p-6 flex flex-col gap-6">
           <div className="flex items-end gap-1">
-            <span className="text-3xl font-bold text-text-primary" style={{ fontFamily: 'JetBrains Mono' }}>9,900</span>
+            <span className="text-3xl font-bold text-text-primary" style={{ fontFamily: 'JetBrains Mono' }}>1,900</span>
             <span className="text-sm text-text-secondary mb-1">원 / 월</span>
           </div>
 

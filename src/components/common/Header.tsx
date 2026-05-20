@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useUIStore } from '../../stores/uiStore'
 import { useAuthStore } from '../../stores/authStore'
+import { useSubscriptionStore } from '../../stores/subscriptionStore'
 import { logout as logoutApi } from '../../services/api/auth'
 import { LoginModal } from './LoginModal'
 
@@ -10,6 +11,7 @@ export function Header() {
   const setThemePreference = useUIStore((s) => s.setThemePreference)
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
   const logout = useAuthStore((s) => s.logout)
+  const isPremium = useSubscriptionStore((s) => s.isPremium)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const { pathname } = useLocation()
 
@@ -34,6 +36,19 @@ export function Header() {
           <span className="text-text-primary text-lg font-medium" style={{ fontFamily: 'JetBrains Mono' }}>Querify</span>
         </Link>
         <div className="flex items-center gap-6">
+          {isPremium ? (
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">
+              PRO
+            </span>
+          ) : (
+            <Link
+              to="/pricing"
+              className={`text-[13px] font-semibold transition-colors ${pathname === '/pricing' ? 'text-amber-300' : 'text-amber-400 hover:text-amber-300'}`}
+              style={{ fontFamily: 'JetBrains Mono' }}
+            >
+              프리미엄
+            </Link>
+          )}
           <Link
             to="/sandbox"
             className={`text-[13px] font-medium transition-colors ${pathname === '/sandbox' ? 'text-brand-primary' : 'text-text-secondary hover:text-text-primary'}`}

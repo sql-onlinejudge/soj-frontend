@@ -1,15 +1,20 @@
 import { useState } from 'react'
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk'
 import toast from 'react-hot-toast'
-import { checkout } from '../services/api/payments'
+import { checkout, cancelSubscription } from '../services/api/payments'
 import { ApiError } from '../services/api/client'
 import { useAuthStore } from '../stores/authStore'
+import { useSubscriptionStore } from '../stores/subscriptionStore'
 import { getUserId } from '../hooks/useUserId'
 import { LoginModal } from '../components/common/LoginModal'
+import { Button } from '../components/common/Button'
 
 export function PricingPage() {
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
+  const isPremium = useSubscriptionStore((s) => s.isPremium)
+  const invalidateSubscription = useSubscriptionStore((s) => s.invalidate)
   const [isLoading, setIsLoading] = useState(false)
+  const [isCanceling, setIsCanceling] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const handleSubscribe = async () => {
@@ -38,6 +43,26 @@ export function PricingPage() {
       }
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleCancel = async () => {
+    if (!isLoggedIn) return
+    if (!confirm('정말 구독을 취소하시겠습니까?')) return
+
+    setIsCanceling(true)
+    try {
+      await cancelSubscription()
+      toast.success('구독이 취소되었습니다.')
+      invalidateSubscription()
+    } catch (e) {
+      if (e instanceof ApiError) {
+        toast.error(e.message)
+      } else {
+        toast.error('구독 취소에 실패했습니다.')
+      }
+    } finally {
+      setIsCanceling(false)
     }
   }
 
@@ -71,23 +96,34 @@ export function PricingPage() {
             ))}
           </ul>
 
-          <button
-            onClick={handleSubscribe}
-            disabled={isLoading}
-            className="w-full h-12 rounded-lg font-semibold bg-brand-primary text-[#0A0A0A] hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center justify-center gap-2"
-          >
-            {isLoading ? (
-              <>
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                처리 중...
-              </>
-            ) : (
-              '구독 시작하기'
-            )}
-          </button>
+          {isPremium ? (
+            <Button
+              onClick={handleCancel}
+              disabled={isCanceling}
+              variant="secondary"
+              className="w-full h-12"
+            >
+              {isCanceling ? '처리 중...' : '구독 취소'}
+            </Button>
+          ) : (
+            <button
+              onClick={handleSubscribe}
+              disabled={isLoading}
+              className="w-full h-12 rounded-lg font-semibold bg-brand-primary text-[#0A0A0A] hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  처리 중...
+                </>
+              ) : (
+                '구독 시작하기'
+              )}
+            </button>
+          )}
         </div>
 
         <p className="text-center text-xs text-text-muted">

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Link, useSearchParams, useNavigate } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useDebounce } from '../hooks/useDebounce'
 import { getWorkbooks } from '../services/api'
 import type { PaginatedResponse, Workbook } from '../types'
@@ -11,7 +11,6 @@ import { formatRelativeTime } from '../utils/formatters'
 import { useSubscriptionStore } from '../stores/subscriptionStore'
 
 export function WorkbooksPage() {
-  const navigate = useNavigate()
   const isPremium = useSubscriptionStore((s) => s.isPremium)
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -87,7 +86,7 @@ export function WorkbooksPage() {
                   <div className="p-5 rounded-lg bg-surface-panel border border-border-input hover:bg-surface-muted transition-colors flex flex-col gap-3 h-full">
                     <div className="flex items-start justify-between gap-2">
                       <span className="text-base font-semibold text-text-primary">{wb.name}</span>
-                      {locked && <LockBadge onClick={() => navigate('/pricing')} />}
+                      {locked && <LockBadge />}
                     </div>
                     <span className="text-xs text-text-secondary leading-relaxed line-clamp-2">{wb.description}</span>
                     <div className="flex items-center justify-between mt-auto pt-2">
@@ -98,7 +97,7 @@ export function WorkbooksPage() {
                 )
 
                 return locked ? (
-                  <div key={wb.id} className="cursor-pointer" onClick={() => navigate('/pricing')}>
+                  <div key={wb.id} className="cursor-not-allowed opacity-60">
                     {card}
                   </div>
                 ) : (

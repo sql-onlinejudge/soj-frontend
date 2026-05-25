@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import { Modal } from '../common/Modal'
 import { Button } from '../common/Button'
 
@@ -8,8 +7,6 @@ interface PremiumRequiredModalProps {
 }
 
 export function PremiumRequiredModal({ isOpen, onClose }: PremiumRequiredModalProps) {
-  const navigate = useNavigate()
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} ariaLabel="프리미엄 구독 필요">
       <div className="flex flex-col items-center gap-5 p-6 text-center">
@@ -26,21 +23,9 @@ export function PremiumRequiredModal({ isOpen, onClose }: PremiumRequiredModalPr
           <h2 className="text-base font-bold text-text-primary">프리미엄 구독이 필요합니다</h2>
           <p className="text-sm text-text-secondary">이 콘텐츠는 프리미엄 구독자만 이용할 수 있습니다.</p>
         </div>
-        <div className="flex gap-3 w-full">
-          <Button variant="secondary" className="flex-1" onClick={onClose}>
-            닫기
-          </Button>
-          <Button
-            variant="primary"
-            className="flex-1"
-            onClick={() => {
-              onClose()
-              navigate('/pricing')
-            }}
-          >
-            구독하기
-          </Button>
-        </div>
+        <Button variant="secondary" className="w-full" onClick={onClose}>
+          닫기
+        </Button>
       </div>
     </Modal>
   )

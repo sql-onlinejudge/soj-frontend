@@ -37,9 +37,12 @@ export function Header() {
         </Link>
         <div className="flex items-center gap-6">
           {isPremium ? (
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">
+            <Link
+              to="/pricing"
+              className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-colors"
+            >
               PRO
-            </span>
+            </Link>
           ) : (
             <Link
               to="/pricing"

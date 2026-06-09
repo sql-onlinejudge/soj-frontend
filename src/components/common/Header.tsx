@@ -36,10 +36,18 @@ export function Header() {
           <span className="text-text-primary text-lg font-medium" style={{ fontFamily: 'JetBrains Mono' }}>Querify</span>
         </Link>
         <div className="flex items-center gap-6">
-          {isPremium && (
+          {isPremium ? (
             <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">
               PRO
             </span>
+          ) : (
+            <Link
+              to="/pricing"
+              className={`text-[13px] font-semibold transition-colors ${pathname === '/pricing' ? 'text-amber-300' : 'text-amber-400 hover:text-amber-300'}`}
+              style={{ fontFamily: 'JetBrains Mono' }}
+            >
+              프리미엄
+            </Link>
           )}
           <Link
             to="/sandbox"

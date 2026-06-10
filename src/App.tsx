@@ -11,6 +11,9 @@ import { OAuthCallbackPage } from './pages/OAuthCallbackPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { SandboxPage } from './pages/SandboxPage'
 import { PricingPage } from './pages/PricingPage'
+import { TermsPage } from './pages/TermsPage'
+import { PrivacyPage } from './pages/PrivacyPage'
+import { RefundPage } from './pages/RefundPage'
 import { useUIStore, applyTheme } from './stores/uiStore'
 import { useAuthStore } from './stores/authStore'
 import { useSubscriptionStore } from './stores/subscriptionStore'
@@ -58,6 +61,9 @@ const router = createBrowserRouter([
       { path: '/workbooks/:workbookId', element: <WorkbookDetailPage /> },
       { path: '/sandbox', element: <SandboxPage /> },
       { path: '/pricing', element: <PricingPage /> },
+      { path: '/terms', element: <TermsPage /> },
+      { path: '/privacy', element: <PrivacyPage /> },
+      { path: '/refund', element: <RefundPage /> },
       { path: '/oauth/callback', element: <OAuthCallbackPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],

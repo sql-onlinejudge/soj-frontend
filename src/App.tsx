@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { Header } from './components/common/Header'
+import { Footer } from './components/common/Footer'
 import { HomePage } from './pages/HomePage'
 import { ProblemsPage } from './pages/ProblemsPage'
 import { ProblemPage } from './pages/ProblemPage'
@@ -32,9 +33,10 @@ function Layout() {
   }, [isLoggedIn, fetchSubscription])
 
   return (
-    <div className="min-h-screen bg-surface-bg transition-colors">
+    <div className="min-h-screen bg-surface-bg transition-colors flex flex-col">
       <Header />
       <Outlet />
+      <Footer />
       <Toaster
         position="bottom-right"
         toastOptions={{

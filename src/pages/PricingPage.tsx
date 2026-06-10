@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk'
 import toast from 'react-hot-toast'
 import { checkout } from '../services/api/payments'
@@ -165,14 +164,6 @@ export function PricingPage() {
         <p className="text-center text-xs text-text-muted">
           토스페이먼츠를 통해 안전하게 결제됩니다. 언제든지 해지할 수 있습니다.
         </p>
-
-        <div className="flex items-center justify-center gap-4 text-xs text-text-muted">
-          <Link to="/terms" className="hover:text-text-secondary transition-colors">이용약관</Link>
-          <span>·</span>
-          <Link to="/privacy" className="hover:text-text-secondary transition-colors">개인정보처리방침</Link>
-          <span>·</span>
-          <Link to="/refund" className="hover:text-text-secondary transition-colors">환불 정책</Link>
-        </div>
       </div>
 
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />

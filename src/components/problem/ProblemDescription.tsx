@@ -189,7 +189,10 @@ export function ProblemDescription({ problem, testcases }: ProblemDescriptionPro
         <p className="text-base text-text-secondary mb-6">
           제출 수: {formatNumber(problem.submissionCount)} &nbsp;&nbsp; 정답 수:{' '}
           {formatNumber(problem.solvedCount)} &nbsp;&nbsp; 정답률:{' '}
-          {problem.acceptanceRate != null ? `${problem.acceptanceRate.toFixed(1)}%` : '-'}
+          {(() => {
+            const rate = problem.acceptanceRate ?? (problem.submissionCount > 0 ? (problem.solvedCount / problem.submissionCount) * 100 : null)
+            return rate != null ? `${rate.toFixed(1)}%` : '-'
+          })()}
         </p>
 
         <section className="mb-6">

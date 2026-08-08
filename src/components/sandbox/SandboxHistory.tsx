@@ -38,6 +38,7 @@ export function SandboxHistory({ currentSessionKey, onLoad, onReactivate }: Sand
     setLoadingKey(sessionKey)
     try {
       await onReactivate(sessionKey)
+      setHistory(await getSandboxHistory())
     } catch {
       toast.error('죄송합니다. 처리 중 오류가 발생했습니다.')
     } finally {
